@@ -1,58 +1,16 @@
-# Infra - AWS
-
-We apply cross-region replication for all regions. To apply cross-region replication, run the folling command for each region:
-
-```bash
-aws ecr put-replication-configuration \
-     --replication-configuration file://crr-setup.json \
-     --region us-west-2
 ```
+Usage: testing-worker [options]
 
-Below is an example content of `crr-setup.json`. Make sure to replace the registryId with your own account ID (this is for account ID 477364786938) and to remove the object of the region you are configuring with the above command.
+Start worker to execute RapidAPI tests and requests
 
-```
-{
-    "rules": [
-        {
-            "destinations": [
-                {
-                    "region": "us-east-1",
-                    "registryId": "477364786938"
-                },
-                {
-                    "region": "us-west-2",
-                    "registryId": "477364786938"
-                },
-                {
-                    "region": "ap-east-1",
-                    "registryId": "477364786938"
-                },
-                {
-                    "region": "ap-south-1",
-                    "registryId": "477364786938"
-                },
-                {
-                    "region": "ap-northeast-2",
-                    "registryId": "477364786938"
-                },
-                {
-                    "region": "ap-southeast-1",
-                    "registryId": "477364786938"
-                },
-                {
-                    "region": "ca-central-1",
-                    "registryId": "477364786938"
-                },
-                {
-                    "region": "eu-west-3",
-                    "registryId": "477364786938"
-                },
-                {
-                    "region": "sa-east-1",
-                    "registryId": "477364786938"
-                }
-            ]
-        }
-    ]
-}
+Options:
+  -V, --version                output the version number
+  -b, --base <base>            The base URL to fetch executions from (default: "https://rapidapi.com/testing")
+  -s, --secret <secret>        Location secret for fetching executions
+  -k, --key <key>              Location key for fetching executions. Must match secret.
+  -c, --context <context>      API context (user ID or organization ID) for fetching executions
+  -i, --frequency <frequency>  ms interval between fetching new tests executions. If the frequency is undefined, the worker will only execute once. (default: undefined)
+  -m, --max <max>              The max amount of ms to run intervals. If this is undefined, the worker will continue to run until the process is terminated. (default: undefined)
+  -b, --batch <batch>          The number of test executions to process each interval (default: 100)
+  -h, --help                   display help for command
 ```

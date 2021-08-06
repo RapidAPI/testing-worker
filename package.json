@@ -1,7 +1,9 @@
 {
   "name": "@rapidapi/testing-worker",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A RapidAPI Testing worker CLI",
+  "private": false,
+  "license": "MIT",
   "scripts": {},
   "main": "src/main.js",
   "repository": {
@@ -34,7 +36,7 @@
     "vm2": "^3.9.2",
     "xml-js": "^1.6.11"
   },
-  "bin": "./cli.js",
+  "bin": "src/cli.js",
   "devDependencies": {
     "yarn": "^1.22.11",
     "prettier": "2.2.1",
