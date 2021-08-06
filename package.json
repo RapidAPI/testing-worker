@@ -1,0 +1,44 @@
+{
+  "name": "@rapidapi/testing-worker",
+  "version": "0.0.1",
+  "description": "A RapidAPI Testing worker CLI",
+  "scripts": {},
+  "main": "src/main.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:RapidAPI/testing-worker.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "author": "Lucas Swartsenburg",
+  "homepage": "https://github.com/RapidAPI/testing-worker#readme",
+  "dependencies": {
+    "@sentry/node": "^6.2.5",
+    "@sentry/serverless": "^5.29.2",
+    "ajv": "^6.12.5",
+    "axios": "^0.21.1",
+    "axios-cookiejar-support": "^1.0.1",
+    "chalk": "^4.1.0",
+    "commander": "^8.1.0",
+    "consola": "^2.15.0",
+    "faker": "^5.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "mssql": "^6.3.1",
+    "mustache": "^4.1.0",
+    "mysql": "^2.18.1",
+    "pg": "^8.6.0",
+    "tedious": "^11.0.8",
+    "tough-cookie": "^4.0.0",
+    "uuid": "^8.3.2",
+    "vm2": "^3.9.2",
+    "xml-js": "^1.6.11"
+  },
+  "bin": "./cli.js",
+  "devDependencies": {
+    "yarn": "^1.22.11",
+    "prettier": "2.2.1",
+    "eslint-config-prettier": "8.2.0",
+    "eslint-plugin-prettier": "3.4.0"
+  }
+}
