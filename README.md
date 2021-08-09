@@ -1,16 +1,70 @@
+# RapidAPI Testing Workers
+API Tests in RapidAPI Testing are executed by ***workers***. By default, the workers executing your tests live in RapidAPI cloud. However, there are instances where you might want to run a worker locally (for example, calling "localhost" APIs, connecting to a local database, etc.). In order to satisfy these use cases, you can install + run a RapidAPI Testing Worker locally. 
+
+## Installing Testing Workers Locally
+RapidAPI Testing Worker is available [as a package in GitHub](https://github.com/RapidAPI/testing-worker/packages/929038). You can install RapidAPI Testing workers locally through one of the following methods.
+
+#### Install from the command line
 ```
-Usage: testing-worker [options]
+npm install -g @rapidapi/testing-worker@0.0.2
+```
 
-Start worker to execute RapidAPI tests and requests
+#### Install via package.json
+```json
+"@rapidapi/testing-worker": "0.0.2"
+```
 
-Options:
-  -V, --version                output the version number
-  -b, --base <base>            The base URL to fetch executions from (default: "https://rapidapi.com/testing")
-  -s, --secret <secret>        Location secret for fetching executions
-  -k, --key <key>              Location key for fetching executions. Must match secret.
-  -c, --context <context>      API context (user ID or organization ID) for fetching executions
-  -i, --frequency <frequency>  ms interval between fetching new tests executions. If the frequency is undefined, the worker will only execute once. (default: undefined)
-  -m, --max <max>              The max amount of ms to run intervals. If this is undefined, the worker will continue to run until the process is terminated. (default: undefined)
-  -b, --batch <batch>          The number of test executions to process each interval (default: 100)
-  -h, --help                   display help for command
+
+## Running Testing Workers with Examples
+Once you have successfully installed a testing worker on your machine, you can run it by executing `testing-worker` command along with the appropriate options. 
+
+### Syntax
+```
+testing-worker [options]
+```
+
+### Options
+
+##### ```-s, --secret <secret>``` (**Required**)
+
+Location secret from which the worker will fetch executions. This is the location secret that you will use to add the worker to the UI.
+
+##### ```-k, --key <key>``` (**Required**)
+
+Location key for fetching executions. Must match secret.
+
+##### ```-c, --context <context>``` (**Required**)
+
+API context (user ID or organization ID) for fetching executions
+
+##### ```-i, --frequency <frequency>``` (**Optional; default is undefined**)
+
+Frequency in which the worker should fetch new test executions, set as period interval in ms. For example, setting frequency as 5000 ms means that new tests will be fetched every 5000 ms. If the frequency is _undefined_ (as is the default), the worker will only fetch new tests once. Please note that with frequency less than 2000 ms, you may get 429 (rate limiting) errors. 
+
+##### ```-m, --max <max>``` (**Optional; default is undefined**)
+
+The amount of time in ms that the worker is going to be active. For example, setting max as 10000 ms means that the worker will be active for 10000 ms, and then exits. Any tests triggered after the worker exists will not be executed until a new worker is started. If max is _undefined_ (as is the default), the worker will continue to run until the process is terminated. 
+
+##### ```-b, --base <base>``` (**Optional**)
+
+The base URL to fetch executions from (default: "https://rapidapi.com/testing")
+
+##### ```-b, --batch <batch>```(**Optional; default is 100**)
+
+You can use this to control the number of test executions to process on each interval.
+
+##### ```-V, --version``` 
+
+Retrieve the version number
+
+##### ```-h, --help```                   
+
+Display help content for the command
+
+### Example
+
+Below command will run a RapidAPI Testing Worker that fetches 200 new tests every 5 seconds from location queue `3866fd2aaeb474a76fdf236062660fb31df234b8`, defined for context `1234567`, with location key as `custom_worker`. 
+
+```
+testing-worker -s 3866fd2aaeb474a76fdf236062660fb31df234b8 -k custom_worker -c 1234567 --frequency 5000 --batch 200
 ```
