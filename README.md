@@ -1,7 +1,7 @@
 # RapidAPI Testing Workers
 API Tests in RapidAPI Testing are executed by ***workers***. By default, the workers executing your tests live in RapidAPI cloud. However, there are instances where you might want to run a worker locally (for example, calling "localhost" APIs, connecting to a local database, etc.). In order to satisfy these use cases, you can install + run a RapidAPI Testing Worker locally. 
 
-## Installing Testing Workers Locally
+## Installing Workers Locally
 RapidAPI Testing Worker is available as a package in GitHub. You can install RapidAPI Testing workers locally through one of the following methods.
 
 #### Install from the command line
@@ -15,7 +15,7 @@ npm install -g @rapidapi/testing-worker@0.0.2
 ```
 
 
-## Running Testing Workers with Examples
+## Running Workers with Examples
 Once you have successfully installed a testing worker on your machine, you can run it by executing `testing-worker` command along with the appropriate options. 
 
 ### Syntax
