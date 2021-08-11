@@ -15,36 +15,6 @@ function isUrlSafe(url) {
   return false;
 }
 
-/**
- * @swagger
- * components:
- *   schemas:
- *     BaseDb:
- *       required:
- *         - connection
- *       properties:
- *         connection:
- *           type: object
- *           properties:
- *             host:
- *               type: string
- *             port:
- *               type: string
- *             user:
- *               type: string
- *             password:
- *               type: string
- *             database:
- *               type: string
- *         query:
- *           type: string
- *         options:
- *           type: object
- *           properties:
- *             timeout:
- *               type: integer
- */
-
 class BaseDb {
   constructor({ connection, query, options }) {
     this.connectionDetails = connection;

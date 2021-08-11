@@ -1,6 +1,7 @@
 const PostgresqlDb = require("./PostgresqlDb");
 const MssqlDb = require("./MssqlDb");
 const MySqlDb = require("./MySqlDb");
+const BaseDb = require("./BaseDb");
 
 const MAPPING = {
   mysql: MySqlDb,
@@ -14,4 +15,8 @@ const matchDb = (str) => {
 
 module.exports = {
   matchDb,
+  PostgresqlDb,
+  MssqlDb,
+  MySqlDb,
+  BaseDb,
 };
