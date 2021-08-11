@@ -37,7 +37,7 @@ Location key for fetching executions. Must match secret.
 
 API context (user ID or organization ID) for fetching executions
 
-##### ```-i, --frequency <frequency>``` (**Optional; default is undefined**)
+##### ```-f, --frequency <frequency>``` (**Optional; default is undefined**)
 
 Frequency in which the worker should fetch new test executions, set as period interval in ms. For example, setting frequency as 5000 ms means that new tests will be fetched every 5000 ms. If the frequency is _undefined_ (as is the default), the worker will only fetch new tests once. Please note that with frequency less than 2000 ms, you may get 429 (rate limiting) errors. 
 
@@ -45,7 +45,7 @@ Frequency in which the worker should fetch new test executions, set as period in
 
 The amount of time in ms that the worker is going to be active. For example, setting max as 10000 ms means that the worker will be active for 10000 ms, and then exits. Any tests triggered after the worker exists will not be executed until a new worker is started. If max is _undefined_ (as is the default), the worker will continue to run until the process is terminated. 
 
-##### ```-b, --base <base>``` (**Optional**)
+##### ```-u, --url <baseUrl>``` (**Optional**)
 
 The base URL to fetch executions from (default: "https://rapidapi.com/testing")
 
