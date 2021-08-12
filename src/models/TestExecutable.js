@@ -28,23 +28,6 @@ const actionClasses = {
   "Connector.database": require("./actions/Database").Database,
 };
 
-/**
- * Parameters is not added here as that doesn't work well with Swagger inheritance
- *
- * @swagger
- * components:
- *   schemas:
- *     TestExecutable:
- *       required:
- *         - actions
- *         - parameters
- *       properties:
- *         actions:
- *           type: array
- *           oneOf:
- *             - $ref: '#/components/schemas/AssertDifferent'
- */
-
 class TestExecutable {
   constructor(steps = []) {
     // turn steps list into material execution classes

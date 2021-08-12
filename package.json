@@ -1,6 +1,6 @@
 {
   "name": "@rapidapi/testing-worker",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A RapidAPI Testing worker CLI",
   "private": false,
   "license": "MIT",
@@ -16,6 +16,7 @@
   "author": "Lucas Swartsenburg",
   "homepage": "https://github.com/RapidAPI/testing-worker#readme",
   "dependencies": {
+    "@rapidapi/testing-worker": "^0.0.2",
     "@sentry/node": "^6.2.5",
     "@sentry/serverless": "^5.29.2",
     "ajv": "^6.12.5",
@@ -38,9 +39,9 @@
   },
   "bin": "src/cli.js",
   "devDependencies": {
-    "yarn": "^1.22.11",
-    "prettier": "2.2.1",
     "eslint-config-prettier": "8.2.0",
-    "eslint-plugin-prettier": "3.4.0"
+    "eslint-plugin-prettier": "3.4.0",
+    "prettier": "2.2.1",
+    "yarn": "^1.22.11"
   }
 }

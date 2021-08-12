@@ -3,14 +3,14 @@
 const consola = require("consola");
 const { execute } = require("./main");
 const { program } = require("commander");
+const pjson = require("../package.json");
 
 if (require.main === module) {
-  program.version("0.0.1");
-  // start agent
+  program.version(pjson.version);
   program
     .description("Start worker to execute RapidAPI tests and requests")
     .requiredOption(
-      "-b, --base <base>",
+      "-u, --url <baseUrl>",
       "The base URL to fetch executions from",
       process.env.BASE_URL || process.env.URL || "https://rapidapi.com/testing"
     )
@@ -30,7 +30,7 @@ if (require.main === module) {
       process.env.LOCATION_CONTEXT
     )
     .option(
-      "-i, --frequency <frequency>",
+      "-f, --frequency <frequency>",
       "ms interval between fetching new tests executions. If the frequency is undefined, the worker will only execute once. (default: undefined)",
       process.env.FREQUENCY || process.env.INTERVAL
     )
@@ -48,19 +48,19 @@ if (require.main === module) {
   program.parse();
   const cmd = program.opts();
 
-  consola.log("Starting a the worker from the CLI with the following settings:\n");
-  consola.log(`RapidAPI Testing base URL <base>: ${cmd.base}`);
-  consola.log(`RapidAPI Testing location secret <secret>: ${cmd.secret.substr(0, 3)}********`);
-  consola.log(`RapidAPI Testing location key <key>: ${cmd.key}`);
-  consola.log(`RapidAPI Testing context (user or organization ID) <context>: ${cmd.context}`);
-  consola.log(`Frequency the worker will poll for new test/requests to be executed <frequency>: ${cmd.frequency}`);
-  consola.log(`Maximum time this worker will keep polling for tests/requests <max>: ${cmd.max}`);
-  consola.log(`Number of requests/tests to dequeue on each interval <max>: ${cmd.batch}`);
+  consola.info("Starting a the worker from the CLI with the following settings:\n");
+  consola.info(`RapidAPI Testing base URL <url>: ${cmd.url}`);
+  consola.info(`RapidAPI Testing location secret <secret>: ${cmd.secret.substr(0, 3)}********`);
+  consola.info(`RapidAPI Testing location key <key>: ${cmd.key}`);
+  consola.info(`RapidAPI Testing context (user or organization ID) <context>: ${cmd.context}`);
+  consola.info(`Frequency the worker will poll for new test/requests to be executed <frequency>: ${cmd.frequency}`);
+  consola.info(`Maximum time this worker will keep polling for tests/requests <max>: ${cmd.max}`);
+  consola.info(`Number of requests/tests to dequeue on each interval <max>: ${cmd.batch}`);
 
   const START_TIMESTAMP = Date.now();
 
   const settings = {
-    baseUrl: cmd.base,
+    baseUrl: cmd.url,
     locationSecret: cmd.secret,
     locationKey: cmd.key,
     locationContext: cmd.context === "Default" ? undefined : cmd.context,

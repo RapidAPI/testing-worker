@@ -90,7 +90,7 @@ async function fetchAndExecuteTests({ baseUrl, locationSecret, locationKey, loca
     })
   );
 
-  if (logging) consola.success(`Executed ${testExecutions.length} test executions`);
+  if (logging) consola.success(`Executed ${testExecutions.length} test executions\n`);
 }
 
 module.exports = {

@@ -1,5 +1,9 @@
 const { fetchAndExecuteRequests } = require("./RapidRequest");
 const { fetchAndExecuteTests } = require("./RapidTest");
+const models = require("./models");
+const utils = require("./utils");
+const RapidRequest = require("./RapidRequest");
+const RapidTest = require("./RapidTest");
 
 async function execute(overwriteDetails = {}) {
   const locationSecret = overwriteDetails.locationSecret || process.env.KEY || process.env.LOCATION_SECRET;
@@ -26,4 +30,8 @@ async function execute(overwriteDetails = {}) {
 
 module.exports = {
   execute,
+  models,
+  utils,
+  RapidRequest,
+  RapidTest,
 };

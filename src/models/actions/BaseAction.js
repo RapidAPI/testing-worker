@@ -1,19 +1,3 @@
-/**
- * Parameters is not added here as that doesn't work well with Swagger inheritance
- *
- * @swagger
- * components:
- *   schemas:
- *     BaseAction:
- *       required:
- *         - _id
- *         - action
- *       properties:
- *         _id:
- *           type: string
- *         action:
- *           type: string
- */
 class BaseAction {
   constructor(parameters = {}) {
     this.parameters = parameters;

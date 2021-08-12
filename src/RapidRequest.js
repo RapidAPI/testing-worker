@@ -67,15 +67,19 @@ const processRequest = async (req) => {
   };
 };
 
-const executeRequest = async (request, locationDetails) => {
+const executeRequest = async (request) => {
   context = new Context({
-    ...request.testVariables,
-    ...request.envVariables,
+    ...(request.testVariables || {}),
+    ...(request.envVariables || {}),
   });
   const transformedRequest = recursiveReplace(request.request, context.data);
 
-  let { response, executionTime } = await processRequest(transformedRequest);
-  await sendRequestResult(request, response, executionTime, locationDetails);
+  return await processRequest(transformedRequest);
+};
+
+const executeAndSendRequest = async (request, locationDetails) => {
+  const { response, executionTime } = await executeRequest(request);
+  return sendRequestResult(request, response, executionTime, locationDetails);
 };
 
 const fetchAndExecuteRequests = async (locationDetails) => {
@@ -84,16 +88,16 @@ const fetchAndExecuteRequests = async (locationDetails) => {
   await Promise.all(
     requests.map((request) => {
       try {
-        return executeRequest(request, locationDetails);
+        return executeAndSendRequest(request, locationDetails);
       } catch (e) {
         console.error(e);
       }
     })
   );
-
-  if (locationDetails.logging) consola.success(`Executed ${requests.length} requests`);
+  if (locationDetails.logging) consola.success(`Executed ${requests.length} requests\n`);
 };
 
 module.exports = {
   fetchAndExecuteRequests,
+  executeRequest,
 };

@@ -1,20 +1,6 @@
 const { performance } = require("perf_hooks");
 const { BaseAction } = require("./BaseAction");
 
-/**
- * @swagger
- * components:
- *   schemas:
- *     AssertDifferent:
- *       allOf:
- *         - $ref: '#/components/schemas/BaseAction'
- *         - type: object
- *           required:
- *             - expression
- *           properties:
- *             expression:
- *               type: string
- */
 class AssertDifferent extends BaseAction {
   async eval(context) {
     const t0 = performance.now();
