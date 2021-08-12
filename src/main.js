@@ -1,3 +1,5 @@
+const axios = require("axios");
+
 const { fetchAndExecuteRequests } = require("./RapidRequest");
 const { fetchAndExecuteTests } = require("./RapidTest");
 const models = require("./models");
@@ -12,7 +14,7 @@ async function execute(overwriteDetails = {}) {
 
   const baseUrl = overwriteDetails.baseUrl || process.env.URL || process.env.BASE_URL;
   const batchSize = process.env.BATCH_SIZE || 100;
-  const logging = overwriteDetails != undefined ? overwriteDetails.logging : true;
+  const logging = overwriteDetails.logging != undefined ? overwriteDetails.logging : true;
 
   if (!baseUrl) throw new Error(`URL environment variable not found nor given as command line argument (required)`);
   if (!locationSecret)
@@ -23,6 +25,8 @@ async function execute(overwriteDetails = {}) {
     throw new Error(
       `Neither LOCATION nor LOCATION_KEY environment variable found nor given as command line argument (required)`
     );
+
+  axios.defaults.headers.common["x-rapidapi-location"] = locationKey;
 
   await fetchAndExecuteRequests({ baseUrl, locationSecret, locationKey, locationContext, batchSize, logging });
   await fetchAndExecuteTests({ baseUrl, locationSecret, locationKey, locationContext, batchSize, logging });

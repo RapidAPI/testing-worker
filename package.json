@@ -1,10 +1,12 @@
 {
   "name": "@rapidapi/testing-worker",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A RapidAPI Testing worker CLI",
   "private": false,
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "worker:local:interval": "node src/cli.js"
+  },
   "main": "src/main.js",
   "repository": {
     "type": "git",

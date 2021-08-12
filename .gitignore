@@ -104,3 +104,5 @@ uploads/*
 /static/vs
 
 .npmrc
+
+.vscode

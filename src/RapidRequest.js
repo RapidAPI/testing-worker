@@ -58,6 +58,7 @@ const sendRequestResult = async (
 
 const processRequest = async (req) => {
   const mockContext = new Context({});
+  req.payload = req.data;
   const action = new Http(req);
   const result = await action.eval(mockContext);
   const executionTime = result.actionReports && result.actionReports.length > 0 && result.actionReports[0].time;
