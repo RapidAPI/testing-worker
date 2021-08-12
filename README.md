@@ -6,12 +6,12 @@ RapidAPI Testing Worker is available as a package in GitHub. You can install Rap
 
 #### Install from the command line
 ```
-npm install -g @rapidapi/testing-worker@0.0.2
+npm install -g @rapidapi/testing-worker@0.0.3
 ```
 
 #### Install via package.json
 ```json
-"@rapidapi/testing-worker": "0.0.2"
+"@rapidapi/testing-worker": "0.0.3"
 ```
 
 
