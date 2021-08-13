@@ -59,6 +59,56 @@ class Http extends BaseAction {
             : this.parameters.form;
       }
       response = await transport.request(requestObj);
+
+      // convert xml to json object
+      if (
+        response.headers["content-type"] &&
+        (response.headers["content-type"].indexOf("application/xml") > -1 ||
+          response.headers["content-type"].indexOf("text/xml") > -1 ||
+          response.headers["content-type"].indexOf("text/html") > -1)
+      ) {
+        response.data = xmlConvert.xml2js(response.data, { compact: true });
+      }
+
+      const t1 = performance.now();
+      const elapsedTime = t1 - t0;
+      response.time = elapsedTime;
+      let rawRequest = response.request._header + "\n";
+      if (this.method.toLowerCase() != "get") {
+        rawRequest += typeof requestObj.data == "object" ? JSON.stringify(requestObj.data, null, 4) : requestObj.data;
+      }
+
+      return {
+        response,
+        contextWrites: [{ key: this.parameters.variable, value: response }],
+        apiCalls: [
+          {
+            url: this.parameters.url,
+            method: this.method,
+            time: elapsedTime,
+            status: response.status,
+            size: response.headers["content-length"],
+            type: response.headers["content-type"],
+          },
+        ],
+        actionReports: [
+          {
+            action: `Http.${this.method.toLowerCase()}`,
+            success: true,
+            shortSummary: `Got ${response.status} - ${response.statusText} response from ${this.method} ${this.parameters.url}`,
+            longSummary: `${JSON.stringify(
+              {
+                responseBody: response.data,
+                responseHeaders: response.headers,
+                request: rawRequest,
+              },
+              null,
+              4
+            )}`,
+            time: elapsedTime,
+          }, //todo support XML response
+        ],
+      };
     } catch (e) {
       if (!e.response) {
         //request was not successful
@@ -79,56 +129,6 @@ class Http extends BaseAction {
       }
       response = e.response;
     }
-
-    // convert xml to json object
-    if (
-      response.headers["content-type"] &&
-      (response.headers["content-type"].indexOf("application/xml") > -1 ||
-        response.headers["content-type"].indexOf("text/xml") > -1 ||
-        response.headers["content-type"].indexOf("text/html") > -1)
-    ) {
-      response.data = xmlConvert.xml2js(response.data, { compact: true });
-    }
-
-    const t1 = performance.now();
-    const elapsedTime = t1 - t0;
-    response.time = elapsedTime;
-    let rawRequest = response.request._header + "\n";
-    if (this.method.toLowerCase() != "get") {
-      rawRequest += typeof requestObj.data == "object" ? JSON.stringify(requestObj.data, null, 4) : requestObj.data;
-    }
-
-    return {
-      response,
-      contextWrites: [{ key: this.parameters.variable, value: response }],
-      apiCalls: [
-        {
-          url: this.parameters.url,
-          method: this.method,
-          time: elapsedTime,
-          status: response.status,
-          size: response.headers["content-length"],
-          type: response.headers["content-type"],
-        },
-      ],
-      actionReports: [
-        {
-          action: `Http.${this.method.toLowerCase()}`,
-          success: true,
-          shortSummary: `Got ${response.status} - ${response.statusText} response from ${this.method} ${this.parameters.url}`,
-          longSummary: `${JSON.stringify(
-            {
-              responseBody: response.data,
-              responseHeaders: response.headers,
-              request: rawRequest,
-            },
-            null,
-            4
-          )}`,
-          time: elapsedTime,
-        }, //todo support XML response
-      ],
-    };
   }
 }
 
