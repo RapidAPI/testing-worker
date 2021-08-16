@@ -13,13 +13,3 @@ jobs:
         with:
           node-version: "v14.15.4"
       - run: echo "${{ toJson(${{ github.event) }}"
-      # - uses: JS-DevTools/npm-publish@v1
-      #   with:
-      #     token: ${{ secrets.NPM_TOKEN_NPM }}
-      #     registry: https://registry.npmjs.org/
-      #     tag:
-      # - uses: JS-DevTools/npm-publish@v1
-      #   with:
-      #     token: ${{ secrets.NPM_TOKEN_GITHUB }}
-      #     registry: https://npm.pkg.github.com
-      #     tag:
