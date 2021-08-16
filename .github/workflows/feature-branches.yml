@@ -4,7 +4,7 @@ on:
   pull_request:
 
 jobs:
-  publish-package:
+  node-build-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -12,5 +12,12 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "v14.15.4"
-      - run: |
-          echo "Comment on PR #${{  github.event.number }}"
+      # - uses: JS-DevTools/npm-publish@v1
+      #   with:
+      #     token: ${{ secrets.NPM_TOKEN_NPM }}
+      #     registry: https://registry.npmjs.org/
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN_GITHUB }}
+          registry: https://npm.pkg.github.com
+          tag: ${{  github.event.number }}
