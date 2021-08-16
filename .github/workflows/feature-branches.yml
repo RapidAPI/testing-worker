@@ -21,3 +21,4 @@ jobs:
           token: ${{ secrets.NPM_TOKEN_GITHUB }}
           registry: https://npm.pkg.github.com
           tag: ${{  github.event.number }}
+          check-version: false
