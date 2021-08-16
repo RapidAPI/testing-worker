@@ -13,4 +13,4 @@ jobs:
         with:
           node-version: "v14.15.4"
       - run: |
-          echo "Comment on PR #${{ github.event.issue.number }}"
+          echo "Comment on PR #${{  github.event.number }}"
