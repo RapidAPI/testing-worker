@@ -1,0 +1,17 @@
+name: Release and publishing version specific packages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  node-build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "v14.15.4"
+      - run: echo "${{ toJson(${{ github.event) }}"
