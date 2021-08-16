@@ -13,12 +13,11 @@
     "url": "git@github.com:RapidAPI/testing-worker.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+    "access": "public"
   },
   "author": "Lucas Swartsenburg",
   "homepage": "https://github.com/RapidAPI/testing-worker#readme",
   "dependencies": {
-    "@rapidapi/testing-worker": "^0.0.2",
     "@sentry/node": "^6.2.5",
     "@sentry/serverless": "^5.29.2",
     "ajv": "^6.12.5",
