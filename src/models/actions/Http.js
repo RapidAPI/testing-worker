@@ -36,79 +36,27 @@ class Http extends BaseAction {
     const t0 = performance.now();
     let requestObj;
     const timeout = (this.parameters.options && this.parameters.options.timeout) || 10000;
-    try {
-      requestObj = {
-        url: this.parameters.url,
-        method: this.method,
-        params: this.parameters.params,
-        headers: this.parameters.headers,
-        timeout,
-      };
-      if (this.method.toLowerCase() != "get") {
-        // handle json payload
-        if (
-          this.parameters.payload &&
-          typeof this.parameters.payload == "object" &&
-          Object.keys(this.parameters.payload).length > 0
-        ) {
-          this.parameters.payload = JSON.stringify(this.parameters.payload, null, 4);
-        }
-        requestObj.data =
-          this.parameters.payload && this.parameters.payload.length > 0
-            ? this.parameters.payload
-            : this.parameters.form;
-      }
-      response = await transport.request(requestObj);
-
-      // convert xml to json object
+    requestObj = {
+      url: this.parameters.url,
+      method: this.method,
+      params: this.parameters.params,
+      headers: this.parameters.headers,
+      timeout,
+    };
+    if (this.method.toLowerCase() != "get") {
+      // handle json payload
       if (
-        response.headers["content-type"] &&
-        (response.headers["content-type"].indexOf("application/xml") > -1 ||
-          response.headers["content-type"].indexOf("text/xml") > -1 ||
-          response.headers["content-type"].indexOf("text/html") > -1)
+        this.parameters.payload &&
+        typeof this.parameters.payload == "object" &&
+        Object.keys(this.parameters.payload).length > 0
       ) {
-        response.data = xmlConvert.xml2js(response.data, { compact: true });
+        this.parameters.payload = JSON.stringify(this.parameters.payload, null, 4);
       }
-
-      const t1 = performance.now();
-      const elapsedTime = t1 - t0;
-      response.time = elapsedTime;
-      let rawRequest = response.request._header + "\n";
-      if (this.method.toLowerCase() != "get") {
-        rawRequest += typeof requestObj.data == "object" ? JSON.stringify(requestObj.data, null, 4) : requestObj.data;
-      }
-
-      return {
-        response,
-        contextWrites: [{ key: this.parameters.variable, value: response }],
-        apiCalls: [
-          {
-            url: this.parameters.url,
-            method: this.method,
-            time: elapsedTime,
-            status: response.status,
-            size: response.headers["content-length"],
-            type: response.headers["content-type"],
-          },
-        ],
-        actionReports: [
-          {
-            action: `Http.${this.method.toLowerCase()}`,
-            success: true,
-            shortSummary: `Got ${response.status} - ${response.statusText} response from ${this.method} ${this.parameters.url}`,
-            longSummary: `${JSON.stringify(
-              {
-                responseBody: response.data,
-                responseHeaders: response.headers,
-                request: rawRequest,
-              },
-              null,
-              4
-            )}`,
-            time: elapsedTime,
-          }, //todo support XML response
-        ],
-      };
+      requestObj.data =
+        this.parameters.payload && this.parameters.payload.length > 0 ? this.parameters.payload : this.parameters.form;
+    }
+    try {
+      response = await transport.request(requestObj);
     } catch (e) {
       if (!e.response) {
         //request was not successful
@@ -129,6 +77,56 @@ class Http extends BaseAction {
       }
       response = e.response;
     }
+
+    // convert xml to json object
+    if (
+      response.headers["content-type"] &&
+      (response.headers["content-type"].indexOf("application/xml") > -1 ||
+        response.headers["content-type"].indexOf("text/xml") > -1 ||
+        response.headers["content-type"].indexOf("text/html") > -1)
+    ) {
+      response.data = xmlConvert.xml2js(response.data, { compact: true });
+    }
+
+    const t1 = performance.now();
+    const elapsedTime = t1 - t0;
+    response.time = elapsedTime;
+    let rawRequest = response.request._header + "\n";
+    if (this.method.toLowerCase() != "get") {
+      rawRequest += typeof requestObj.data == "object" ? JSON.stringify(requestObj.data, null, 4) : requestObj.data;
+    }
+
+    return {
+      response,
+      contextWrites: [{ key: this.parameters.variable, value: response }],
+      apiCalls: [
+        {
+          url: this.parameters.url,
+          method: this.method,
+          time: elapsedTime,
+          status: response.status,
+          size: response.headers["content-length"],
+          type: response.headers["content-type"],
+        },
+      ],
+      actionReports: [
+        {
+          action: `Http.${this.method.toLowerCase()}`,
+          success: true,
+          shortSummary: `Got ${response.status} - ${response.statusText} response from ${this.method} ${this.parameters.url}`,
+          longSummary: `${JSON.stringify(
+            {
+              responseBody: response.data,
+              responseHeaders: response.headers,
+              request: rawRequest,
+            },
+            null,
+            4
+          )}`,
+          time: elapsedTime,
+        }, //todo support XML response
+      ],
+    };
   }
 }
 
