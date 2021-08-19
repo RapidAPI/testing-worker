@@ -14,10 +14,10 @@ const { program } = require("commander");
 const pjson = require("../package.json");
 
 if (require.main === module) {
-  execute();
+  execute("cli");
 }
 
-async function execute() {
+async function execute(logLevel = "on") {
   program.version(pjson.version);
   program
     .description("Start worker to execute RapidAPI tests and requests")
@@ -59,7 +59,7 @@ async function execute() {
     .option(
       "-l, --logging <logging>",
       "The number of test executions to process each interval",
-      process.env.WORKER_LOGGING || "cli"
+      process.env.WORKER_LOGGING || logLevel
     );
 
   program.parse();
