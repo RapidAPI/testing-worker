@@ -2,7 +2,7 @@ const { recursiveReplace } = require("./utils");
 const axios = require("axios");
 const Context = require("./models/Context");
 const { Http } = require("./models/actions/Http");
-
+const consola = require("consola")
 const { pick } = require("./utils");
 
 const fetchRequests = async ({ baseUrl, locationSecret, locationKey, locationContext, batchSize, logging }) => {
