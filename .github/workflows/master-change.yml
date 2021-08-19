@@ -22,7 +22,6 @@ jobs:
           token: ${{ secrets.NPM_TOKEN_GITHUB }}
           registry: https://npm.pkg.github.com
 
-jobs:
   lambda-build-worker-zip:
     runs-on: ubuntu-latest
     steps:
