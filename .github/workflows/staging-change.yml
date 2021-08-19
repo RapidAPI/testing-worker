@@ -1,0 +1,87 @@
+name: Release and publishing version specific packages
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  lambda-build-worker-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          always-auth: true
+          node-version: v14.15.4
+          registry-url: https://registry.npmjs.org
+          scope: '@rapidapi'
+      
+      - name: Prepare worker_dist directory
+        run: |
+          cp -R ./ ../dist
+      - name: Install node packages
+        run: cd ../dist && yarn install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN_GITHUB}}
+      # Kind of a hack to avoid recursively copying the dist folder
+      - name: Move dist folder down 
+        run: mv ../dist dist
+      - name: Zip dist
+        run: zip -rq worker.zip dist/*
+      - name: Upload the zipped worker
+        uses: actions/upload-artifact@v2
+        with:
+          name: zipped_worker
+          path: worker.zip
+
+  lambda-upload-zip-to-aws:
+    runs-on: ubuntu-latest
+    needs: [lambda-build-worker-zip]
+    steps:
+      - name: Download the zipped worker
+        uses: actions/download-artifact@v2
+        with:
+          name: zipped_worker
+      - name: Deploy default worker to staging us-east-1
+        uses: appleboy/lambda-action@v0.1.3
+        with:
+          aws_access_key_id: ${{ secrets.AWS_STAGING_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_STAGING_SECRET_ACCESS_KEY }}
+          aws_region: us-east-1
+          function_name: rapidapi-stage-testing-worker
+          zip_file: worker.zip
+          handler: dist/src/main.execute
+          #
+          # This is where we add addition default workers in other regions if needed
+          #
+          # e.g.
+          # - name: Deploy worker to staging us-west-1
+          #   ...
+
+      # This is an ad-hoc example of a custom worker that lives in a lambda function to mimic a
+      # customer's environnement.
+      #
+      # This worker's lambda method is triggered by via EventBridge (CloudWatch Events) set for 15m to
+      # keep it hot. While its hit, the lambda will poll at an interval of several seconds
+      # (defined in the testing-worker repo) for new test executions and run them when found.
+      #
+      # To create a new custom worker, use the location POST endpoint
+      # /testing/api/context/<contextID>/location
+      # which also can be found in the swagger page /testing/api/docs/
+      #
+      # To find a context id for your account, look at the
+      # /testing/api/me?include=contexts GET request
+      #
+      # Note. Rapid default workers do not have a LOCATION_CONTEXT
+      #
+      - name: Deploy worker to custom lambda
+        uses: appleboy/lambda-action@v0.1.3
+        with:
+          aws_access_key_id: ${{ secrets.AWS_STAGING_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_STAGING_SECRET_ACCESS_KEY }}
+          aws_region: us-east-1
+          function_name: rapidapi-stage-testing-worker-custom
+          zip_file: worker.zip
+          handler: dist/src/main.execute
