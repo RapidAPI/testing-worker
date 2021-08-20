@@ -1,0 +1,23 @@
+#docker-compose.yml
+version: "3"
+services:
+  testing-worker:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.worker
+    # TODO: figure out how to upload this to the docker repo
+    #image: docker.io/testing-worker:latest
+    environment:
+      # BASE_URL: "https://rapidapi.com"
+      # LOCATION_KEY: "fookey"
+      # LOCATION_SECRET: "foo"
+      # LOCATION_CONTEXT: "blah"
+      # FREQUENCY="4000"
+      # POLLING_TIME_MAX
+      # BATCH_SIZE="100"
+    deploy:
+      restart_policy:
+        condition: any
+
+# To run:
+# $ docker-compose run testing-worker
