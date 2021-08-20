@@ -1,6 +1,6 @@
 {
   "name": "@rapidapi/testing-worker",
-  "version": "0.0.9-alpha.2",
+  "version": "0.0.10",
   "description": "A RapidAPI Testing worker CLI",
   "private": false,
   "license": "MIT",
@@ -38,7 +38,7 @@
     "vm2": "^3.9.2",
     "xml-js": "^1.6.11"
   },
-  "bin": "src/cli.js",
+  "bin": "src/main.js",
   "devDependencies": {
     "eslint-config-prettier": "8.2.0",
     "eslint-plugin-prettier": "3.4.0",
