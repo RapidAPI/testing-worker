@@ -1,4 +1,5 @@
 const { BaseAction } = require("./BaseAction");
+const consola = require("consola");
 const axios = require("axios");
 const axiosCookieJarSupport = require("axios-cookiejar-support").default;
 const tough = require("tough-cookie");
@@ -19,6 +20,7 @@ class Http extends BaseAction {
     // this "shared" axios instance is used to ensure that cookies are properly passed between requests
     let transport;
     try {
+      
       transport = context.get("__http_transport");
     } catch (e) {
       transport = axios.create({
@@ -85,7 +87,12 @@ class Http extends BaseAction {
         response.headers["content-type"].indexOf("text/xml") > -1 ||
         response.headers["content-type"].indexOf("text/html") > -1)
     ) {
-      response.data = xmlConvert.xml2js(response.data, { compact: true });
+      try {
+        response.data = xmlConvert.xml2js(response.data, { compact: true });
+      }
+      catch(err) {
+        consola.error(err);
+      }
     }
 
     const t1 = performance.now();
