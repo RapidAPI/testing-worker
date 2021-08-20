@@ -42,7 +42,9 @@
   "devDependencies": {
     "eslint-config-prettier": "8.2.0",
     "eslint-plugin-prettier": "3.4.0",
+    "jest": "^27.0.6",
     "prettier": "2.2.1",
+    "sinon": "^11.1.2",
     "yarn": "^1.22.11"
   }
 }
