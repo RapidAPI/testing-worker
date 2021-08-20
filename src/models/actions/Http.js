@@ -91,7 +91,7 @@ class Http extends BaseAction {
         response.data = xmlConvert.xml2js(response.data, { compact: true });
       }
       catch(err) {
-        consola.error(err);
+        consola.warn(err.message);
       }
     }
 
