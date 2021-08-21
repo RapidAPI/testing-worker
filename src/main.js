@@ -114,7 +114,7 @@ async function execute(logLevel = "on") {
         }
       }, cmd.frequency);
     });
-    await testLoop();
+    await testLoop;
   }
 }
 
