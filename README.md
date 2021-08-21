@@ -9,13 +9,13 @@ RapidAPI Testing Worker is available as a package on NPM. You can install RapidA
 #### Install from the command line
 
 ```
-npm install -g @rapidapi/testing-worker@0.0.6
+npm install -g @rapidapi/testing-worker@0.0.11
 ```
 
 #### Install via package.json
 
 ```json
-"@rapidapi/testing-worker": "0.0.6"
+"@rapidapi/testing-worker": "0.0.11"
 ```
 
 ## Running Workers with Examples
