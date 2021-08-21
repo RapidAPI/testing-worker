@@ -97,20 +97,24 @@ async function execute(logLevel = "on") {
     consola.error(err);
   }
   if (cmd.frequency) {
-    const interval = setInterval(async function () {
-      if (parseInt(cmd.max)) {
-        let currentTimestamp = Date.now();
-        if (currentTimestamp > parseInt(START_TIMESTAMP) + parseInt(cmd.max)) {
-          clearInterval(interval);
+    const testLoop = new Promise((resolve, reject) => {
+      const interval = setInterval(async function () {
+        if (parseInt(cmd.max)) {
+          let currentTimestamp = Date.now();
+          if (currentTimestamp > parseInt(START_TIMESTAMP) + parseInt(cmd.max)) {
+            clearInterval(interval);
+            resolve();
+          }
         }
-      }
-      if (logging) console.log(`Staring cycle ${cycle++}`);
-      try {
-        await executeOnce(settings);
-      } catch (err) {
-        consola.error(err);
-      }
-    }, cmd.frequency);
+        if (logging) console.log(`Staring cycle ${cycle++}`);
+        try {
+          await executeOnce(settings);
+        } catch (err) {
+          consola.error(err);
+        }
+      }, cmd.frequency);
+    });
+    await testLoop();
   }
 }
 
