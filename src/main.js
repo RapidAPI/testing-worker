@@ -91,11 +91,13 @@ async function execute(logLevel = "on") {
 
   let cycle = 1;
   if (logging) console.log(`Staring cycle ${cycle++}`);
-  executeOnce(settings).catch((err) => {
+  try {
+    await executeOnce(settings);
+  } catch (err) {
     consola.error(err);
-  });
+  }
   if (cmd.frequency) {
-    const interval = setInterval(function () {
+    const interval = setInterval(async function () {
       if (parseInt(cmd.max)) {
         let currentTimestamp = Date.now();
         if (currentTimestamp > parseInt(START_TIMESTAMP) + parseInt(cmd.max)) {
@@ -103,9 +105,11 @@ async function execute(logLevel = "on") {
         }
       }
       if (logging) console.log(`Staring cycle ${cycle++}`);
-      executeOnce(settings).catch((err) => {
+      try {
+        await executeOnce(settings);
+      } catch (err) {
         consola.error(err);
-      });
+      }
     }, cmd.frequency);
   }
 }
