@@ -64,7 +64,9 @@ describe("CodeRun", () => {
 
     expect($result.actionReports.length).toBe(1);
     expect($result.actionReports[0].success).toBe(false);
-    expect($result.actionReports[0].shortSummary).toBe(`Code must return an object. Instead got string "Fuck off"`);
+    expect($result.actionReports[0].shortSummary).toBe(
+      `Error: Code must return an object. Instead got string \"Fuck off\"`
+    );
   });
 
   it("should not fail when code returns nothing", async () => {
