@@ -48,7 +48,7 @@ class CodeRun extends BaseAction {
           {
             action: "Code.run",
             success: false,
-            shortSummary: `${e}`,
+            shortSummary: `${e.message}`,
             longSummary: null,
             time: performance.now() - t0,
           },
