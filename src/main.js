@@ -68,7 +68,7 @@ async function execute(logLevel = "on") {
   const logging = cmd.logging === "on" || cmd.logging === "cli";
 
   if (cmd.logging === "cli") {
-    consola.info("Starting a the worker from the CLI with the following settings:\n");
+    consola.info(`Starting a the worker version: ${pjson.version} from the CLI with the following settings:\n`);
     consola.info(`RapidAPI Testing base URL <url>: ${cmd.url}`);
     consola.info(`RapidAPI Testing location secret <secret>: ${cmd.secret.substr(0, 3)}********`);
     consola.info(`RapidAPI Testing location key <key>: ${cmd.key}`);

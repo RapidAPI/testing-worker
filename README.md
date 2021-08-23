@@ -9,13 +9,13 @@ RapidAPI Testing Worker is available as a package on NPM. You can install RapidA
 #### Install from the command line
 
 ```
-npm install -g @rapidapi/testing-worker@0.0.11
+npm install -g @rapidapi/testing-worker
 ```
 
 #### Install via package.json
 
 ```json
-"@rapidapi/testing-worker": "0.0.11"
+"@rapidapi/testing-worker": "^0.0.11"
 ```
 
 ## Running Workers with Examples
@@ -72,4 +72,24 @@ Below command will run a RapidAPI Testing Worker that fetches 200 new tests ever
 
 ```
 testing-worker -s 3866fd2aaeb474a76fdf236062660fb31df234b8 -k custom_worker -c 1234567 --frequency 5000 --batch 200
+```
+
+## Envirnment variables.
+
+Alternately, you can start the worker with preset env vars and omit the command options entirely.
+
+**The following env vars are supported:**
+
+- `BASE_URL`
+- `LOCATION_KEY`
+- `LOCATION_SECRET`
+- `LOCATION_CONTEXT`
+- `FREQUENCY`
+- `POLLING_TIME_MAX`
+- `BATCH_SIZE`
+
+Once loaded, you can start the work without the command options:
+
+```
+testing-worker
 ```
