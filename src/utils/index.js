@@ -23,7 +23,7 @@ const recursiveReplace = (args, context) => {
             processedArgs[key] = recursiveReplace(arg, context);
             break;
           default:
-            throw `Type Error: type ${typeof arg} for argument ${key} is not supported`;
+            throw new Error(`Type Error: type ${typeof arg} for argument ${key} is not supported`);
             break;
         }
       }

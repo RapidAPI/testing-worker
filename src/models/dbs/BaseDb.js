@@ -59,15 +59,15 @@ class BaseDb {
   }
 
   async _connect() {
-    throw `Implementation of BaseDB must implement '_connect' function`;
+    throw new Error(`Implementation of BaseDB must implement '_connect' function`);
   }
 
   async _disconnect() {
-    throw `Implementation of BaseDB must implement '_disconnect' function`;
+    throw new Error(`Implementation of BaseDB must implement '_disconnect' function`);
   }
 
   async _query() {
-    throw `Implementation of BaseDB must implement '_query' function`;
+    throw new Error(`Implementation of BaseDB must implement '_query' function`);
   }
 }
 

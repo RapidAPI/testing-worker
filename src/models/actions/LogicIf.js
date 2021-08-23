@@ -23,7 +23,7 @@ function compare(val1, operator, val2) {
       return val1 != val2;
   }
 
-  throw `Testing for undefined operator "${operator}"`;
+  throw new Error(`Testing for undefined operator "${operator}"`);
 }
 
 class LogicIf extends BaseAction {

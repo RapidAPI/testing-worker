@@ -8,7 +8,7 @@ class BaseAction {
   }
 
   async eval() {
-    throw `Implementation of BaseAction must implement 'eval' function`;
+    throw new Error(`Implementation of BaseAction must implement 'eval' function`);
   }
 }
 
