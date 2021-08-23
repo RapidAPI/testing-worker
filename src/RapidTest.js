@@ -4,6 +4,7 @@ const Context = require("./models/Context");
 
 async function executeTest(testExecution, locationDetails) {
   let executable, context, testResult;
+  let error;
   try {
     executable = new TestExecutable(JSON.parse(testExecution.test.code));
     context = new Context({
@@ -16,15 +17,18 @@ async function executeTest(testExecution, locationDetails) {
     } catch (e) {
       consola.warn("Failed to execute test");
       consola.warn(e);
+      error = e;
     }
   } catch (e) {
     consola.error("Failed to build test");
     consola.error(e);
+    error = e;
   } finally {
     testResult = testResult || {
       apiCalls: [],
       elapsedTime: 0,
       success: false,
+      error: error?.message,
       actionReports: [],
       timedOut: false,
     };

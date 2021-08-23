@@ -42,7 +42,7 @@ describe("CodeRun", () => {
   it("should fail when an error is thrown by the code", async () => {
     let $action = new CodeRun({
       code: `module.exports = (context) => {
-                throw "Fuck off"
+                throw new Error("fake error")
             }`,
     });
     let $context = new Context({ flightNumber: 815 });
@@ -50,13 +50,13 @@ describe("CodeRun", () => {
 
     expect($result.actionReports.length).toBe(1);
     expect($result.actionReports[0].success).toBe(false);
-    expect($result.actionReports[0].shortSummary).toBe("Fuck off");
+    expect($result.actionReports[0].shortSummary).toBe("fake error");
   });
 
   it("should fail when code returns non-object", async () => {
     let $action = new CodeRun({
       code: `module.exports = (context) => {
-                return "Fuck off"
+                return "not an object"
             }`,
     });
     let $context = new Context({ flightNumber: 815 });
@@ -64,7 +64,10 @@ describe("CodeRun", () => {
 
     expect($result.actionReports.length).toBe(1);
     expect($result.actionReports[0].success).toBe(false);
-    expect($result.actionReports[0].shortSummary).toBe(`Code must return an object. Instead got string "Fuck off"`);
+    console.log($result.actionReports[0].shortSummary)
+    expect($result.actionReports[0].shortSummary).toBe(
+      `Code must return an object. Instead got string \"not an object\"`
+    );
   });
 
   it("should not fail when code returns nothing", async () => {

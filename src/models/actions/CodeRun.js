@@ -17,7 +17,7 @@ class CodeRun extends BaseAction {
       if (res) res = JSON.parse(res);
       else res = {};
       if (res && typeof res != "object") {
-        throw `Code must return an object. Instead got ${typeof res} "${res}"`;
+        throw new Error(`Code must return an object. Instead got ${typeof res} "${res}"`);
       }
 
       for (let rKey of Object.keys(res)) {
@@ -48,7 +48,7 @@ class CodeRun extends BaseAction {
           {
             action: "Code.run",
             success: false,
-            shortSummary: `${e}`,
+            shortSummary: `${e.message}`,
             longSummary: null,
             time: performance.now() - t0,
           },

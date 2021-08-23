@@ -9,6 +9,7 @@ const actionClasses = {
   "Http.put": require("./actions/Http").HttpPut,
   "Http.patch": require("./actions/Http").HttpPatch,
   "Http.delete": require("./actions/Http").HttpDelete,
+  "Http.request": require("./actions/Http").Http,
   "Assert.equals": require("./actions/AssertEquals").AssertEquals,
   "Assert.different": require("./actions/AssertDifferent").AssertDifferent,
   "Assert.type": require("./actions/AssertType").AssertType,
@@ -34,7 +35,11 @@ class TestExecutable {
     let actions = [];
 
     for (let step of steps || []) {
-      if (Object.keys(actionClasses).indexOf(step.action) < 0) throw `No action of type '${step.action}'`;
+      if (Object.keys(actionClasses).indexOf(step.action) < 0) {
+        throw Error(
+          `No action of type '${step.action}'). Your worker might be outdated. Please update to the latest worker version.`
+        );
+      }
       let MaterialClass = actionClasses[step.action];
       let materialStep = new MaterialClass(step.parameters);
       materialStep.action = step.action;
