@@ -1,5 +1,5 @@
 # Define custom function directory
-FROM node:12-buster as basebuild
+FROM node:14-buster as basebuild
 
 WORKDIR "/worker"
 
@@ -7,4 +7,4 @@ COPY . .
 
 RUN yarn install --frozen-lockfile
 
-CMD ["node", "src/cli.js"]
+CMD ["node", "src/main.js"]
