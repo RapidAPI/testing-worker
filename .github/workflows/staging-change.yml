@@ -27,8 +27,8 @@ jobs:
           always-auth: true
           node-version: v14.15.4
           registry-url: https://registry.npmjs.org
-          scope: '@rapidapi'
-      
+          scope: "@rapidapi"
+
       - name: Prepare worker_dist directory
         run: |
           cp -R ./ ../dist
@@ -37,7 +37,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN_GITHUB}}
       # Kind of a hack to avoid recursively copying the dist folder
-      - name: Move dist folder down 
+      - name: Move dist folder down
         run: mv ../dist dist
       - name: Zip dist
         run: zip -rq worker.zip dist/*

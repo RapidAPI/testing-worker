@@ -1,0 +1,7 @@
+name: "Get Package Version"
+outputs:
+  package_version:
+    description: "The version of the npm package"
+runs:
+  using: "node12"
+  main: "index.js"

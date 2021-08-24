@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@actions/core@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@actions/core/-/core-1.5.0.tgz#885b864700001a1b9a6fba247833a036e75ad9d3"
+  integrity sha512-eDOLH1Nq9zh+PJlYLqEMkS/jLQxhksPNmUGNBHfa4G+tQmnIhzpctxmchETtVGyBOvXgOVVpYuE40+eS4cUnwQ==
+
 "@azure/abort-controller@^1.0.0":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@azure/abort-controller/-/abort-controller-1.0.4.tgz#fd3c4d46c8ed67aace42498c8e2270960250eafd"
