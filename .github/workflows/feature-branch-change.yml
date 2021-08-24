@@ -1,15 +1,23 @@
 name: Release and publishing version specific packages
 
-on:
-  pull_request:
+on: [push]
 
 jobs:
-  node-run-tests:
+  docker-build-push-worker:
+    #needs: [node-run-tests]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
         with:
-          node-version: "v14.15.4"
-      - run: yarn install --frozen-lockfile
-      - run: yarn jest
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./docker/Dockerfile.worker
+          push: true
+          tags: rapidapi/testing-worker:latest
