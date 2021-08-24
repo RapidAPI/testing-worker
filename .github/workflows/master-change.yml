@@ -32,7 +32,7 @@ jobs:
         with:
           token: ${{ secrets.NPM_TOKEN_GITHUB }}
           registry: https://npm.pkg.github.com
-  
+
   lambda-build-worker-zip:
     needs: [node-run-tests]
     runs-on: ubuntu-latest
@@ -44,8 +44,8 @@ jobs:
           always-auth: true
           node-version: v14.15.4
           registry-url: https://registry.npmjs.org
-          scope: '@rapidapi'
-      
+          scope: "@rapidapi"
+
       - name: Prepare worker_dist directory
         run: |
           cp -R ./ ../dist
@@ -54,7 +54,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN_GITHUB}}
       # Kind of a hack to avoid recursively copying the dist folder
-      - name: Move dist folder down 
+      - name: Move dist folder down
         run: mv ../dist dist
       - name: Zip dist
         run: zip -rq worker.zip dist/*
@@ -81,7 +81,7 @@ jobs:
           context: .
           file: ./docker/Dockerfile.worker
           push: true
-          tags: docker.io/rapidapi/testing-worker:latest
+          tags: rapidapi/testing-worker:latest
 
   lambda-upload-zip-to-aws:
     runs-on: ubuntu-latest
