@@ -6,18 +6,17 @@ services:
       context: ../
       dockerfile: docker/Dockerfile.worker
     # TODO: figure out how to upload this to the docker repo
-    #image: docker.io/testing-worker:latest
+    image: rapidapi/testing-worker:latest
     environment:
-      # BASE_URL: "https://rapidapi.com"
-      # LOCATION_KEY: "fookey"
-      # LOCATION_SECRET: "foo"
-      # LOCATION_CONTEXT: "blah"
-      # FREQUENCY="4000"
-      # POLLING_TIME_MAX
-      # BATCH_SIZE="100"
+      # BASE_URL: "https://rapidapi.com/testing"
+      # LOCATION_KEY: "example"
+      # LOCATION_SECRET: "52ff291fe47a0bb0ecb2c15eff49b1cd6d6dd17f"
+      # LOCATION_CONTEXT: "3793937"
+      # FREQUENCY: "2000"
+      # # POLLING_TIME_MAX:
+      # BATCH_SIZE: "100"
     deploy:
       restart_policy:
         condition: any
-
 # To run:
 # $ docker-compose run testing-worker
