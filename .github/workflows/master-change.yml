@@ -81,7 +81,7 @@ jobs:
           context: .
           file: ./docker/Dockerfile.worker
           push: true
-          tags: rapidapi/testing-worker:latest
+          tags: rapidapicloud/testing-worker:latest
 
   lambda-upload-zip-to-aws:
     runs-on: ubuntu-latest
