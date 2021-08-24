@@ -20,4 +20,4 @@ jobs:
           context: .
           file: ./docker/Dockerfile.worker
           push: true
-          tags: rapidapi/testing-worker:latest
+          tags: rapidapicloud/testing-worker:latest
