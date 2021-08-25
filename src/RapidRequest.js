@@ -2,7 +2,7 @@ const { recursiveReplace } = require("./utils");
 const axios = require("axios");
 const Context = require("./models/Context");
 const { Http } = require("./models/actions/Http");
-const consola = require("consola")
+const consola = require("consola");
 const { pick } = require("./utils");
 
 const fetchRequests = async ({ baseUrl, locationSecret, locationKey, locationContext, batchSize, logging }) => {
@@ -30,7 +30,7 @@ const sendRequestResult = async (
   request,
   response,
   executionTime,
-  { baseUrl, locationSecret, locationKey, locationContext, batchSize }
+  { baseUrl, locationSecret, locationKey, locationContext }
 ) => {
   const headers = {
     "x-location-secret": locationSecret,
@@ -52,6 +52,7 @@ const sendRequestResult = async (
       }
     );
   } catch (e) {
+    // eslint-disable-next-line
     console.log(e);
   }
 };
@@ -69,7 +70,7 @@ const processRequest = async (req) => {
 };
 
 const executeRequest = async (request) => {
-  context = new Context({
+  const context = new Context({
     ...(request.testVariables || {}),
     ...(request.envVariables || {}),
   });
@@ -85,12 +86,16 @@ const executeAndSendRequest = async (request, locationDetails) => {
 
 const fetchAndExecuteRequests = async (locationDetails) => {
   const requests = await fetchRequests(locationDetails);
-  if (locationDetails.logging) console.log(requests);
+  if (locationDetails.logging) {
+    // eslint-disable-next-line
+    console.log(requests);
+  }
   await Promise.all(
     requests.map((request) => {
       try {
         return executeAndSendRequest(request, locationDetails);
       } catch (e) {
+        // eslint-disable-next-line
         console.error(e);
       }
     })

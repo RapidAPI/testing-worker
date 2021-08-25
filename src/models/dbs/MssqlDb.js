@@ -39,6 +39,7 @@ class MssqlDb extends BaseDb {
       await this.connectionInstance.close();
     } catch (e) {
       // We'll use log to see make sure this error is displayed during development but not on production
+      // eslint-disable-next-line
       console.log(e);
     }
   }

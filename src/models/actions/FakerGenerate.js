@@ -13,7 +13,7 @@ class FakerGenerate extends BaseAction {
           {
             action: "Faker.generate",
             success: false,
-            shortSummary: `Category must be selected, got none`,
+            shortSummary: "Category must be selected, got none",
             longSummary: null,
             time: performance.now() - t0,
           },
@@ -27,7 +27,7 @@ class FakerGenerate extends BaseAction {
           {
             action: "Faker.generate",
             success: false,
-            shortSummary: `Function must be selected, got none`,
+            shortSummary: "Function must be selected, got none",
             longSummary: null,
             time: performance.now() - t0,
           },
@@ -35,7 +35,10 @@ class FakerGenerate extends BaseAction {
       };
     }
 
-    if (!faker.hasOwnProperty(this.parameters.category) || typeof faker[this.parameters.category] != "object") {
+    if (
+      !Object.hasOwnProperty.call(faker, this.parameters.category) ||
+      typeof faker[this.parameters.category] != "object"
+    ) {
       return {
         actionReports: [
           {
@@ -50,7 +53,7 @@ class FakerGenerate extends BaseAction {
     }
 
     if (
-      !faker[this.parameters.category].hasOwnProperty(this.parameters.function) ||
+      !Object.hasOwnProperty.call(faker[this.parameters.category], this.parameters.function) ||
       typeof faker[this.parameters.category][this.parameters.function] != "function"
     ) {
       return {

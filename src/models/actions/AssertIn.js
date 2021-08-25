@@ -1,6 +1,5 @@
 const { BaseAction } = require("./BaseAction");
 const { performance } = require("perf_hooks");
-const { type } = require("os");
 
 class AssertIn extends BaseAction {
   async eval(context) {
@@ -12,7 +11,7 @@ class AssertIn extends BaseAction {
       return {
         actionReports: [
           {
-            action: `Assert.in`,
+            action: "Assert.in",
             success: false,
             shortSummary: `Key ${this.parameters.expression} not found`,
             longSummary: null,
@@ -25,15 +24,15 @@ class AssertIn extends BaseAction {
       if (typeof this.parameters.value == "string") {
         this.parameters.value = JSON.parse(this.parameters.value);
       }
-    } catch (e) {
     } finally {
       if (!Array.isArray(this.parameters.value)) {
+        // eslint-disable-next-line
         return {
           actionReports: [
             {
-              action: `Assert.in`,
+              action: "Assert.in",
               success: false,
-              shortSummary: `Value supplied is not an array`,
+              shortSummary: "Value supplied is not an array",
               longSummary: JSON.stringify({ gotArray: this.parameters.value }),
               time: performance.now() - t0,
             },
@@ -41,10 +40,11 @@ class AssertIn extends BaseAction {
         };
       }
       if (this.parameters.value.indexOf(String(value)) >= 0) {
+        // eslint-disable-next-line
         return {
           actionReports: [
             {
-              action: `Assert.in`,
+              action: "Assert.in",
               success: true,
               shortSummary: `Value for ${this.parameters.expression} ("${value}") exists in array of options`,
               longSummary: null,
@@ -53,10 +53,11 @@ class AssertIn extends BaseAction {
           ],
         };
       } else {
+        // eslint-disable-next-line
         return {
           actionReports: [
             {
-              action: `Assert.in`,
+              action: "Assert.in",
               success: false,
               shortSummary: `${this.parameters.expression} is "${context.get(
                 this.parameters.expression

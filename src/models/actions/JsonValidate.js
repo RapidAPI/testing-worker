@@ -15,7 +15,7 @@ class JsonValidate extends BaseAction {
       return {
         actionReports: [
           {
-            action: `Json.validate`,
+            action: "Json.validate",
             success: false,
             shortSummary: `Key ${this.parameters.expression} not found`,
             longSummary: null,
@@ -33,9 +33,9 @@ class JsonValidate extends BaseAction {
       return {
         actionReports: [
           {
-            action: `Json.validate`,
+            action: "Json.validate",
             success: false,
-            shortSummary: `Schema supplied is not valid json`,
+            shortSummary: "Schema supplied is not valid json",
             longSummary: null,
             time: performance.now() - t0,
           },
@@ -52,7 +52,7 @@ class JsonValidate extends BaseAction {
       return {
         actionReports: [
           {
-            action: `Json.validate`,
+            action: "Json.validate",
             success: true,
             shortSummary: `JSON at ${this.parameters.expression} passed validation`,
             longSummary: JSON.stringify({
@@ -67,7 +67,7 @@ class JsonValidate extends BaseAction {
       return {
         actionReports: [
           {
-            action: `Json.validate`,
+            action: "Json.validate",
             success: false,
             shortSummary: `JSON at ${this.parameters.expression} failed validation`,
             longSummary: JSON.stringify({

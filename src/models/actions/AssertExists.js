@@ -11,7 +11,7 @@ class AssertExists extends BaseAction {
       return {
         actionReports: [
           {
-            action: `Assert.exists`,
+            action: "Assert.exists",
             success: false,
             shortSummary: `Key ${this.parameters.expression} does not exist`,
             longSummary: null,
@@ -24,7 +24,7 @@ class AssertExists extends BaseAction {
       return {
         actionReports: [
           {
-            action: `Assert.exists`,
+            action: "Assert.exists",
             success: true,
             shortSummary: `Key ${this.parameters.expression} exists with value "${value}"`,
             longSummary: null,
@@ -36,7 +36,7 @@ class AssertExists extends BaseAction {
       return {
         actionReports: [
           {
-            action: `Assert.exists`,
+            action: "Assert.exists",
             success: false,
             shortSummary: `Key ${this.parameters.expression} does not exist`,
             longSummary: null,

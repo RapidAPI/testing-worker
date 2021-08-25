@@ -45,6 +45,7 @@ async function executeTest(testExecution, locationDetails) {
   }
 
   await axios.post(
+    // eslint-disable-next-line
     `${locationDetails.baseUrl}/api/location/${locationDetails.locationKey}/execution/${testExecution.testExecution.id}`,
     {
       result: testResult,
@@ -78,16 +79,19 @@ async function fetchAndExecuteTests({ baseUrl, locationSecret, locationKey, loca
   testExecutions = executionsResponse["testExecutions"];
 
   if (logging) consola.info("Test executions:\n");
+  // eslint-disable-next-line
   if (logging) console.info(testExecutions);
 
   await Promise.all(
     testExecutions.map((testExecution) => {
       if (!testExecution) {
+        // eslint-disable-next-line
         console.error("testExecution is null");
       } else {
         try {
           return executeTest(testExecution, { baseUrl, locationSecret, locationKey, locationContext, batchSize });
         } catch (e) {
+          // eslint-disable-next-line
           console.error(e);
         }
       }

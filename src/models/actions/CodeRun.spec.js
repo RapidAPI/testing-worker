@@ -64,9 +64,8 @@ describe("CodeRun", () => {
 
     expect($result.actionReports.length).toBe(1);
     expect($result.actionReports[0].success).toBe(false);
-    console.log($result.actionReports[0].shortSummary)
     expect($result.actionReports[0].shortSummary).toBe(
-      `Code must return an object. Instead got string \"not an object\"`
+      `Code must return an object. Instead got string "not an object"`
     );
   });
 

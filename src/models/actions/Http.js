@@ -11,7 +11,7 @@ class Http extends BaseAction {
     if (this.parameters.method) {
       return this.parameters.method;
     } else {
-      throw new Error(`Subclass of Http must implement getter "method"`);
+      throw new Error("Subclass of Http must implement getter method");
     }
   }
 
@@ -20,7 +20,6 @@ class Http extends BaseAction {
     // this "shared" axios instance is used to ensure that cookies are properly passed between requests
     let transport;
     try {
-      
       transport = context.get("__http_transport");
     } catch (e) {
       transport = axios.create({
@@ -89,8 +88,7 @@ class Http extends BaseAction {
     ) {
       try {
         response.data = xmlConvert.xml2js(response.data, { compact: true });
-      }
-      catch(err) {
+      } catch (err) {
         consola.warn(err.message);
       }
     }
@@ -120,7 +118,8 @@ class Http extends BaseAction {
         {
           action: `Http.${this.method.toLowerCase()}`,
           success: true,
-          shortSummary: `Got ${response.status} - ${response.statusText} response from ${this.method} ${this.parameters.url}`,
+          shortSummary: `Got ${response.status} - ${response.statusText} response from \
+            ${this.method} ${this.parameters.url}`,
           longSummary: `${JSON.stringify(
             {
               responseBody: response.data,

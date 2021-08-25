@@ -30,7 +30,7 @@ class CodeRun extends BaseAction {
           {
             action: "Code.run",
             success: true,
-            shortSummary: `Code executed successfully`,
+            shortSummary: "Code executed successfully",
             longSummary: JSON.stringify(
               {
                 returnedData: res,

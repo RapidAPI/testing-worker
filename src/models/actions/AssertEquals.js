@@ -11,7 +11,7 @@ class AssertEquals extends BaseAction {
       return {
         actionReports: [
           {
-            action: `Assert.equals`,
+            action: "Assert.equals",
             success: false,
             shortSummary: `Key ${this.parameters.expression} not found`,
             longSummary: null,
@@ -24,7 +24,7 @@ class AssertEquals extends BaseAction {
       return {
         actionReports: [
           {
-            action: `Assert.equals`,
+            action: "Assert.equals",
             success: true,
             shortSummary: `${this.parameters.expression} == "${this.parameters.value}"`,
             longSummary: null,
@@ -36,7 +36,7 @@ class AssertEquals extends BaseAction {
       return {
         actionReports: [
           {
-            action: `Assert.equals`,
+            action: "Assert.equals",
             success: false,
             shortSummary: `${this.parameters.expression} is "${context.get(this.parameters.expression)}", expected "${
               this.parameters.value
