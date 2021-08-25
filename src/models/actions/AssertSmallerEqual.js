@@ -26,7 +26,8 @@ class AssertSmallerEqual extends BaseAction {
           {
             action: "Assert.smaller_equal",
             success: false,
-            shortSummary: `Your entered value "${this.parameters.value}" is not a number; The value "${value}" for the expression ${this.parameters.expression} is not a number`,
+            shortSummary: `Your entered value "${this.parameters.value}" is not a number; \
+              The value "${value}" for the expression ${this.parameters.expression} is not a number`,
             longSummary: null,
             time: performance.now() - t0,
           },

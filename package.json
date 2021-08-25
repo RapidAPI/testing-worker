@@ -5,7 +5,10 @@
   "private": false,
   "license": "MIT",
   "scripts": {
-    "worker:local:interval": "node src/main.js"
+    "worker:local:interval": "node src/main.js",
+    "lint": "yarn eslint src/**",
+    "format": "yarn prettier -w src/**",
+    "check-format": "yarn prettier -c src/**"
   },
   "main": "src/main.js",
   "repository": {
@@ -41,6 +44,7 @@
   "bin": "src/main.js",
   "devDependencies": {
     "@actions/core": "^1.5.0",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "8.2.0",
     "eslint-plugin-prettier": "3.4.0",
     "jest": "^27.0.6",

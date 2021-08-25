@@ -17,6 +17,7 @@ class PostgresqlDb extends BaseDb {
       await this.connectionInstance.end();
     } catch (e) {
       // We'll use log to see make sure this error is displayed during development but not on production
+      // eslint-disable-next-line
       console.log(e);
     }
   }

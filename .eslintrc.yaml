@@ -1,8 +1,0 @@
-extends:
-  - prettier
-rules:
-  no-debugger: "error"
-parserOptions:
-  ecmaVersion: 2020
-env:
-  es6: true

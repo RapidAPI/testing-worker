@@ -42,7 +42,7 @@ class LogicIf extends BaseAction {
             {
               action: "Logic.if",
               success: true,
-              shortSummary: `Comparison was positive`,
+              shortSummary: "Comparison was positive",
               longSummary: JSON.stringify({ summary: `"${key}" ${operator} "${value}" is true` }, null, 4),
               time: performance.now() - t0,
             },
@@ -55,7 +55,7 @@ class LogicIf extends BaseAction {
             {
               action: "Logic.if",
               success: true,
-              shortSummary: `Comparison was negative`,
+              shortSummary: "Comparison was negative",
               longSummary: JSON.stringify({ summary: `"${key}" ${operator} "${value}" is false` }, null, 4),
               time: performance.now() - t0,
             },

@@ -11,7 +11,7 @@ class AssertType extends BaseAction {
       return {
         actionReports: [
           {
-            action: `Assert.type`,
+            action: "Assert.type",
             success: false,
             shortSummary: `Key ${this.parameters.expression} not found`,
             longSummary: null,
@@ -24,7 +24,7 @@ class AssertType extends BaseAction {
       return {
         actionReports: [
           {
-            action: `Assert.type`,
+            action: "Assert.type",
             success: true,
             shortSummary: `${this.parameters.expression} is of type ${this.parameters.value} with value "${value}"`,
             longSummary: null,
@@ -36,7 +36,7 @@ class AssertType extends BaseAction {
       return {
         actionReports: [
           {
-            action: `Assert.type`,
+            action: "Assert.type",
             success: false,
             shortSummary: `${this.parameters.expression} is "${context.get(this.parameters.expression)}", expected "${
               this.parameters.value

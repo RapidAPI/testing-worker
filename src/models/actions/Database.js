@@ -3,7 +3,7 @@ const { matchDb } = require("../dbs");
 const { performance } = require("perf_hooks");
 
 class Database extends BaseAction {
-  async eval(context) {
+  async eval() {
     const t0 = performance.now();
     let settings = this.parameters;
 
@@ -33,7 +33,7 @@ class Database extends BaseAction {
           {
             action: "Connector.database",
             success: true,
-            shortSummary: `Database query executed successfully`,
+            shortSummary: "Database query executed successfully",
             longSummary: JSON.stringify(
               {
                 returnedData: data,

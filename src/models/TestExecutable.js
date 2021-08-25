@@ -37,13 +37,14 @@ class TestExecutable {
     for (let step of steps || []) {
       if (Object.keys(actionClasses).indexOf(step.action) < 0) {
         throw Error(
-          `No action of type '${step.action}'). Your worker might be outdated. Please update to the latest worker version.`
+          `No action of type '${step.action}'). Your worker might be outdated. \
+          Please update to the latest worker version.`
         );
       }
       let MaterialClass = actionClasses[step.action];
       let materialStep = new MaterialClass(step.parameters);
       materialStep.action = step.action;
-      if (step.hasOwnProperty("children")) {
+      if (Object.prototype.hasOwnProperty.call(step, "children")) {
         materialStep.children = new TestExecutable(step.children);
       }
       actions.push(materialStep);
@@ -63,7 +64,7 @@ class TestExecutable {
     const { performance } = require("perf_hooks");
     const t0 = performance.now();
 
-    let timeoutTimer = new Promise((resolve, reject) => {
+    let timeoutTimer = new Promise((resolve) => {
       setTimeout(() => {
         cancelled = true;
         resolve(TIMEOUT);
@@ -83,7 +84,6 @@ class TestExecutable {
         try {
           result = Object.assign(result, await action.eval(context));
         } catch (e) {
-          console.error(e);
           result.actionReports = [
             {
               action: action.action,

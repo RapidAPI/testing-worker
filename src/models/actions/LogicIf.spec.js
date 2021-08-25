@@ -56,7 +56,7 @@ describe("LogicIf", () => {
       eval: sinon.fake(),
     };
     let $context = new Context({ varName: 815 });
-    let $result = await $action.eval($context);
+    await $action.eval($context);
 
     expect($action.children.eval.called).toBeFalsy();
   });

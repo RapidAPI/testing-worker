@@ -4,7 +4,7 @@ const recursiveReplace = (args, context) => {
   let processedArgs = Array.isArray(args) ? [] : {};
 
   for (let key in args) {
-    if (args.hasOwnProperty(key)) {
+    if (Object.hasOwnProperty.call(args, key)) {
       let arg = args[key];
       if (arg == null || arg == undefined) {
         processedArgs[key] = arg;
@@ -24,7 +24,6 @@ const recursiveReplace = (args, context) => {
             break;
           default:
             throw new Error(`Type Error: type ${typeof arg} for argument ${key} is not supported`);
-            break;
         }
       }
     }

@@ -43,11 +43,12 @@ class MySqlDb extends BaseDb {
       await this.connectionInstance.end();
     } catch (e) {
       // We'll use log to see make sure this error is displayed during development but not on production
+      // eslint-disable-next-line
       console.log(e);
     }
   }
 
-  async _query(sql) {
+  async _query() {
     let res = await this.connectionInstance.query({
       sql: this.sqlQuery,
       timeout: this.options.timeout,

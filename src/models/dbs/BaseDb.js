@@ -11,6 +11,7 @@ function isUrlSafe(url) {
 
   if (foundViolations.length == 0) return true;
 
+  // eslint-disable-next-line
   console.log(`Found URL Violations:  ${foundViolations.join(", ")}`);
   return false;
 }
@@ -50,8 +51,6 @@ class BaseDb {
     try {
       await this._connect();
       result = await this._query();
-    } catch (e) {
-      throw e;
     } finally {
       await this._disconnect();
     }
@@ -59,15 +58,15 @@ class BaseDb {
   }
 
   async _connect() {
-    throw new Error(`Implementation of BaseDB must implement '_connect' function`);
+    throw new Error("Implementation of BaseDB must implement '_connect' function");
   }
 
   async _disconnect() {
-    throw new Error(`Implementation of BaseDB must implement '_disconnect' function`);
+    throw new Error("Implementation of BaseDB must implement '_disconnect' function");
   }
 
   async _query() {
-    throw new Error(`Implementation of BaseDB must implement '_query' function`);
+    throw new Error("Implementation of BaseDB must implement '_query' function");
   }
 }
 

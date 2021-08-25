@@ -90,6 +90,7 @@ async function execute(logLevel = "on") {
   const START_TIMESTAMP = Date.now();
 
   let cycle = 1;
+  // eslint-disable-next-line
   if (logging) console.log(`Staring cycle ${cycle++}`);
   try {
     await executeOnce(settings);
@@ -97,7 +98,7 @@ async function execute(logLevel = "on") {
     consola.error(err);
   }
   if (cmd.frequency) {
-    const testLoop = new Promise((resolve, reject) => {
+    const testLoop = new Promise((resolve) => {
       const interval = setInterval(async function () {
         if (parseInt(cmd.max)) {
           let currentTimestamp = Date.now();
@@ -106,7 +107,10 @@ async function execute(logLevel = "on") {
             resolve();
           }
         }
-        if (logging) console.log(`Staring cycle ${cycle++}`);
+        if (logging) {
+          // eslint-disable-next-line
+          console.log(`Staring cycle ${cycle++}`);
+        }
         try {
           await executeOnce(settings);
         } catch (err) {
