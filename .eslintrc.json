@@ -1,0 +1,59 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2021": true,
+        "jest": true
+    },
+    "globals": {
+      "consola": true,
+      "process": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "prettier"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 12
+    },
+    "rules": {
+        "no-console": 2,
+        "max-len": [
+          "error",
+          {
+              "code": 120,
+              "ignoreComments": true,
+              "ignoreStrings": true,
+              "tabWidth": 2,
+              "ignoreUrls": true
+          }
+        ],
+        "indent": [
+            "error",
+            2,
+            {
+              "SwitchCase": 1
+            }
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "double"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ]
+    },
+    "overrides": [
+        {
+          "files": ["*.spec.js"],
+          "rules": {
+            "quotes": "off"
+          }
+        }
+      ]
+}
