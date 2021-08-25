@@ -33,6 +33,29 @@ jobs:
           token: ${{ secrets.NPM_TOKEN_GITHUB }}
           registry: https://npm.pkg.github.com
 
+  make-release:
+    needs: [npm-publish-package]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "v14.15.4"
+      - run: yarn install --frozen-lockfile
+      - name: Get version number
+        uses: ./.github/actions/get-version
+        id: get_package_version
+      - name: Create a Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: release-v${{ steps.get_package_version.outputs.package_version }}
+          release_name: Release v${{ steps.get_package_version.outputs.package_version }}
+          body: This release was generated for commit ${{ github.sha }}
+          draft: false
+          prerelease: false
+
   lambda-build-worker-zip:
     needs: [node-run-tests]
     runs-on: ubuntu-latest
