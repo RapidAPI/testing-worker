@@ -7,7 +7,8 @@
   "scripts": {
     "worker:local:interval": "node src/main.js",
     "lint": "yarn eslint src/**",
-    "format": "yarn prettier -w src/**"
+    "format": "yarn prettier -w src/**",
+    "check-format": "yarn prettier -c src/**"
   },
   "main": "src/main.js",
   "repository": {

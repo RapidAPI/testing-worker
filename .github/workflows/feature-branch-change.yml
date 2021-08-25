@@ -13,3 +13,5 @@ jobs:
           node-version: "v14.15.4"
       - run: yarn install --frozen-lockfile
       - run: yarn jest
+      - run: yarn check-format
+      - run: yarn lint
