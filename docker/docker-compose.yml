@@ -8,12 +8,12 @@ services:
     image: rapidapicloud/testing-worker:latest
     ## example env vars
     #environment:
-      # BASE_URL: "https://rapidapi.com"
+      # BASE_URL: "https://rapidapi.com/testing"
       # LOCATION_KEY: "my_custom_worker"
       # LOCATION_SECRET: "abc123!"
       # LOCATION_CONTEXT: "123456"
-      # FREQUENCY: "4000"
-      # BATCH_SIZE: "100"
+      # FREQUENCY: 4000
+      # BATCH_SIZE: 100
     deploy:
       restart_policy:
         condition: any
