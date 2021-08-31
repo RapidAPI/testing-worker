@@ -57,8 +57,8 @@ async function execute(logLevel = "on") {
       process.env.BATCH_SIZE || 100
     )
     .option(
-      "-l, --logging <logging>",
-      "The number of test executions to process each interval",
+      "-l, --logging [on, off, cli]",
+      "Logging level. 'cli' prints additional information at startup useful for debugging",
       process.env.WORKER_LOGGING || logLevel
     );
 

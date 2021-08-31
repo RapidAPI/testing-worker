@@ -12,12 +12,6 @@ RapidAPI Testing Worker is available as a package on NPM. You can install RapidA
 npm install -g @rapidapi/testing-worker
 ```
 
-#### Install via package.json
-
-```json
-"@rapidapi/testing-worker": "^0.0.11"
-```
-
 ## Running Workers with Examples
 
 Once you have successfully installed a testing worker on your machine, you can run it by executing `testing-worker` command along with the appropriate options.
@@ -25,7 +19,7 @@ Once you have successfully installed a testing worker on your machine, you can r
 ### Syntax
 
 ```
-testing-worker [options]
+npx testing-worker [options]
 ```
 
 ### Options
@@ -66,6 +60,11 @@ Retrieve the version number
 
 Display help content for the command
 
+#####  `-l, --logging`
+
+Use "on", "off" or "cli". "cli" will show additional information at start up.
+
+
 ### Example
 
 Below command will run a RapidAPI Testing Worker that fetches 200 new tests every 5 seconds from location queue `3866fd2aaeb474a76fdf236062660fb31df234b8`, defined for context `1234567`, with location key as `custom_worker`.
@@ -74,7 +73,7 @@ Below command will run a RapidAPI Testing Worker that fetches 200 new tests ever
 testing-worker -s 3866fd2aaeb474a76fdf236062660fb31df234b8 -k custom_worker -c 1234567 --frequency 5000 --batch 200
 ```
 
-## Envirnment variables.
+## Environment variables.
 
 Alternately, you can start the worker with preset env vars and omit the command options entirely.
 
@@ -87,6 +86,7 @@ Alternately, you can start the worker with preset env vars and omit the command 
 - `FREQUENCY`
 - `POLLING_TIME_MAX`
 - `BATCH_SIZE`
+- `WORKER_LOGGING`
 
 Once loaded, you can start the work without the command options:
 
