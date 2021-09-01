@@ -18,6 +18,7 @@ if (require.main === module) {
 }
 
 async function execute(logLevel = "on") {
+  const ignoreSSL = "false"; // Fail any "https" tests with missing cert.
   program.version(pjson.version);
   program
     .description("Start worker to execute RapidAPI tests and requests")
@@ -60,6 +61,11 @@ async function execute(logLevel = "on") {
       "-l, --logging [on, off, cli]",
       "Logging level. 'cli' prints additional information at startup useful for debugging",
       process.env.WORKER_LOGGING || logLevel
+    )
+    .option(
+      "--ignore-ssl [true, false]",
+      "Ignore a missing or self-signed SSL certificate from an API endpoint",
+      process.env.IGNORE_MISSING_SSL_CERT || ignoreSSL
     );
 
   program.parse();
@@ -75,16 +81,19 @@ async function execute(logLevel = "on") {
     consola.info(`RapidAPI Testing context (user or organization ID) <context>: ${cmd.context}`);
     consola.info(`Frequency the worker will poll for new test/requests to be executed <frequency>: ${cmd.frequency}`);
     consola.info(`Maximum time this worker will keep polling for tests/requests <max>: ${cmd.max}`);
-    consola.info(`Number of requests/tests to dequeue on each interval <max>: ${cmd.batch}\n`);
+    consola.info(`Number of requests/tests to dequeue on each interval <max>: ${cmd.batch}`);
+    consola.info(`Ignore missing SSL certificates for https requests: ${cmd.ignoreSsl}\n`);
   }
 
-  const settings = {
+  // Store the settings in a global so they cab be read anywhere
+  global.settings = {
     baseUrl: cmd.url,
     locationSecret: cmd.secret,
     locationKey: cmd.key,
     locationContext: cmd.context === "Default" ? undefined : cmd.context,
     batchSize: cmd.batch,
     logging,
+    ignoreSSL: cmd.ignoreSsl,
   };
 
   const START_TIMESTAMP = Date.now();
@@ -93,7 +102,7 @@ async function execute(logLevel = "on") {
   // eslint-disable-next-line
   if (logging) console.log(`Staring cycle ${cycle++}`);
   try {
-    await executeOnce(settings);
+    await executeOnce({ ...global.settings });
   } catch (err) {
     consola.error(err);
   }
@@ -112,7 +121,7 @@ async function execute(logLevel = "on") {
           console.log(`Staring cycle ${cycle++}`);
         }
         try {
-          await executeOnce(settings);
+          await executeOnce({ ...global.settings });
         } catch (err) {
           consola.error(err);
         }

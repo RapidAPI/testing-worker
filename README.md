@@ -54,16 +54,19 @@ You can use this to control the number of test executions to process on each int
 
 ##### `-V, --version`
 
-Retrieve the version number
+Retrieve the version number.
 
 ##### `-h, --help`
 
-Display help content for the command
+Display help content for the command.
 
 #####  `-l, --logging`
 
 Use "on", "off" or "cli". "cli" will show additional information at start up.
 
+#####  `--ignore-ssl`
+
+Ignore missing SSL certificates for https requests.
 
 ### Example
 
@@ -87,6 +90,7 @@ Alternately, you can start the worker with preset env vars and omit the command 
 - `POLLING_TIME_MAX`
 - `BATCH_SIZE`
 - `WORKER_LOGGING`
+- `IGNORE_MISSING_SSL_CERT`
 
 Once loaded, you can start the work without the command options:
 

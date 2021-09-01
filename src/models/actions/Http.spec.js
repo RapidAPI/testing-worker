@@ -17,6 +17,10 @@ describe("Http", () => {
     axiosCookieJarSupport = require("axios-cookiejar-support");
     axiosCookieJarSupport.default.mockReset();
 
+    global.settings = {
+      ignoreSSL: "false",
+    };
+
     jest.mock("axios");
     jest.mock("axios-cookiejar-support");
 
@@ -257,7 +261,7 @@ describe("Http", () => {
     expect(typeof $result.contextWrites[0].value.time).toBe("number");
   });
 
-  it.only("should preserve cookies between requests", async () => {
+  it("should preserve cookies between requests", async () => {
     const { HttpGet } = require("./Http");
 
     fakeRequest.mockResolvedValue({
@@ -292,5 +296,44 @@ describe("Http", () => {
     expect($result.contextWrites[0].key).toBe("nomnomnom");
     expect($result.contextWrites[0].value.data).toMatchObject({ cookies: { testing: "rapidapi" } });
     expect(axiosCookieJarSupport.default.mock.calls.length).toBe(1); // Should still be exactly called once, not twice!
+  });
+
+  describe("`ignoreSSL` option", () => {
+    it("does not pass `rejectUnauthorized` to custom httpsAgent when `ignoreSSL` is false", async () => {
+      global.settings = {
+        ignoreSSL: "false",
+      };
+      const { HttpGet } = require("./Http");
+
+      let $action = new HttpGet({
+        url: "https://fake.org/ip",
+        variable: "ccc",
+      });
+
+      await $action.eval(new Context());
+      expect(axios.create.mock.calls[0][0]).toStrictEqual({
+        withCredentials: true,
+      });
+    });
+
+    it.only("passes `rejectUnauthorized` set to custom httpsAgent when `ignoreSSL` is set to true", async () => {
+      global.settings = {
+        ignoreSSL: "true",
+      };
+      const { HttpGet } = require("./Http");
+
+      let $action = new HttpGet({
+        url: "https://fake.org/ip",
+        variable: "ccc",
+      });
+
+      await $action.eval(new Context());
+      expect(axios.create.mock.calls[0][0]).toMatchObject({
+        withCredentials: true,
+        httpsAgent: {
+          options: { rejectUnauthorized: false },
+        },
+      });
+    });
   });
 });
