@@ -1,4 +1,5 @@
 const { BaseAction } = require("./BaseAction");
+const https = require("https");
 const consola = require("consola");
 const axios = require("axios");
 const axiosCookieJarSupport = require("axios-cookiejar-support").default;
@@ -22,9 +23,19 @@ class Http extends BaseAction {
     try {
       transport = context.get("__http_transport");
     } catch (e) {
-      transport = axios.create({
-        withCredentials: true,
-      });
+      if (global.settings.ignoreSSL === "false") {
+        transport = axios.create({
+          withCredentials: true,
+        });
+      } else {
+        // Allow self-signed or missing SSL certs
+        transport = axios.create({
+          withCredentials: true,
+          httpsAgent: new https.Agent({
+            rejectUnauthorized: false,
+          }),
+        });
+      }
 
       axiosCookieJarSupport(transport);
       transport.defaults.jar = new tough.CookieJar();
@@ -118,8 +129,8 @@ class Http extends BaseAction {
         {
           action: `Http.${this.method.toLowerCase()}`,
           success: true,
-          shortSummary: `Got ${response.status} - ${response.statusText} response from \
-            ${this.method} ${this.parameters.url}`,
+          // eslint-disable-next-line
+          shortSummary: `Got ${response.status} - ${response.statusText} response from ${this.method} ${this.parameters.url}`,
           longSummary: `${JSON.stringify(
             {
               responseBody: response.data,
