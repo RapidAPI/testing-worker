@@ -133,8 +133,16 @@ async function execute(logLevel = "on") {
 
 async function executeOnce(overwriteDetails = {}) {
   axios.defaults.headers.common["x-rapidapi-location"] = overwriteDetails.locationKey;
-  await fetchAndExecuteRequests(overwriteDetails);
-  await fetchAndExecuteTests(overwriteDetails);
+  try {
+    await fetchAndExecuteRequests(overwriteDetails);
+    await fetchAndExecuteTests(overwriteDetails);
+  } catch (e) {
+    if (e.response) {
+      consola.error(`${e.response.status}, ${e.response.statusText}, ${e.response.data}`);
+    } else {
+      consola.error(e);
+    }
+  }
 }
 
 module.exports = {
