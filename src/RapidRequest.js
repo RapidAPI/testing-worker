@@ -23,6 +23,9 @@ const fetchRequests = async ({ baseUrl, locationSecret, locationKey, locationCon
     })
   ).data;
   requests = requestsResponse["requests"];
+  if (requests === undefined) {
+    throw new Error("Response from service is incorrect, check the 'BASE_URL'");
+  }
   return requests;
 };
 
