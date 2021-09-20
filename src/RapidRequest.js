@@ -66,10 +66,24 @@ const processRequest = async (req) => {
   const action = new Http(req);
   const result = await action.eval(mockContext);
   const executionTime = result.actionReports && result.actionReports.length > 0 && result.actionReports[0].time;
-  return {
-    response: pick(result.response, ["data", "headers", "status"]),
-    executionTime,
-  };
+  if (!result.response) {
+    // Cases where the DNS can not resolve or we don't get a response from the server.
+    return {
+      response: {
+        // This is not entirely correct, but the testing endpoint requires a response object
+        // with a statue code when posting back to the service.
+        data: "Server did not return a response",
+        status: 500,
+        headers: {},
+      },
+      executionTime,
+    };
+  } else {
+    return {
+      response: pick(result.response || {}, ["data", "headers", "status"]),
+      executionTime,
+    };
+  }
 };
 
 const executeRequest = async (request) => {
