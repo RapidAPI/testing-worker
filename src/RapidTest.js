@@ -36,6 +36,7 @@ async function executeTest(testExecution, locationDetails) {
 
   const headers = {
     "x-location-secret": locationDetails.locationSecret,
+    "x-tenant-id": testExecution.tenantId || "1", // this value comes from the testing service
   };
   if (locationDetails.locationKey) {
     headers["x-location-key"] = locationDetails.locationKey;
