@@ -37,7 +37,7 @@ const sendRequestResult = async (
 ) => {
   const headers = {
     "x-location-secret": locationSecret,
-    "x-tenant-id": request.tenantId || "1", // this value comes from the testing service
+    "x-forwarded-tenant-id": request.tenantId || "1", // this value comes from the testing service
   };
   headers["x-location-key"] = locationKey;
   if (locationContext) {
