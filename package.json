@@ -8,7 +8,8 @@
     "worker:local:interval": "node src/main.js",
     "lint": "yarn eslint src/**",
     "format": "yarn prettier -w src/**",
-    "check-format": "yarn prettier -c src/**"
+    "check-format": "yarn prettier -c src/**",
+    "test": "yarn jest --watch"
   },
   "main": "src/main.js",
   "repository": {
