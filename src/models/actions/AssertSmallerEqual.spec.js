@@ -14,7 +14,7 @@ describe("AssertGreaterEqual", () => {
     expect($result.actionReports[0].action).toBe("Assert.smaller_equal");
 
     expect($result.actionReports[0].success).toBe(true);
-    expect($result.actionReports[0].shortSummary).toBe('varName >= "1022"');
+    expect($result.actionReports[0].shortSummary).toBe('varName <= "1022"');
     expect(typeof $result.actionReports[0].time).toBe("number");
   });
 
@@ -29,7 +29,7 @@ describe("AssertGreaterEqual", () => {
     expect($result.actionReports.length).toBe(1);
     expect($result.actionReports[0].action).toBe("Assert.smaller_equal");
     expect($result.actionReports[0].success).toBe(true);
-    expect($result.actionReports[0].shortSummary).toBe('varName >= "815"');
+    expect($result.actionReports[0].shortSummary).toBe('varName <= "815"');
     expect(typeof $result.actionReports[0].time).toBe("number");
   });
 

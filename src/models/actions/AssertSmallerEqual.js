@@ -63,7 +63,7 @@ class AssertSmallerEqual extends BaseAction {
           {
             action: "Assert.smaller_equal",
             success: true,
-            shortSummary: `${this.parameters.expression} >= "${this.parameters.value}"`,
+            shortSummary: `${this.parameters.expression} <= "${this.parameters.value}"`,
             longSummary: null,
             time: performance.now() - t0,
           },
