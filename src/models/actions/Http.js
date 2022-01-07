@@ -47,7 +47,7 @@ class Http extends BaseAction {
     let response;
     const t0 = performance.now();
     let requestObj;
-    const timeoutSeconds = (this.parameters.options && this.parameters.options.timeout) || 10;
+    const timeoutSeconds = (this.parameters.options && this.parameters.options.timeout) || 15;
     requestObj = {
       url: this.parameters.url,
       method: this.method,
