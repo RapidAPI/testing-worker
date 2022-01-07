@@ -47,13 +47,13 @@ class Http extends BaseAction {
     let response;
     const t0 = performance.now();
     let requestObj;
-    const timeout = (this.parameters.options && this.parameters.options.timeout) || 10000;
+    const timeoutSeconds = (this.parameters.options && this.parameters.options.timeout) || 10;
     requestObj = {
       url: this.parameters.url,
       method: this.method,
       params: this.parameters.params,
       headers: this.parameters.headers,
-      timeout,
+      timeout: 1000 * timeoutSeconds,
     };
     if (this.method.toLowerCase() != "get") {
       // handle json payload
