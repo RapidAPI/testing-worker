@@ -117,7 +117,7 @@ jobs:
         with:
           name: zipped_worker
       - name: Deploy worker to production us-east-1
-        uses: appleboy/lambda-action@v0.1.3
+        uses: appleboy/lambda-action@v0.1.5
         with:
           aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
@@ -125,8 +125,9 @@ jobs:
           function_name: rapidapi-prod-testing-worker
           zip_file: worker.zip
           handler: dist/src/main.execute
+          description: "aws:states:opt-out"
       - name: Deploy worker to production us-west-2
-        uses: appleboy/lambda-action@v0.1.3
+        uses: appleboy/lambda-action@v0.1.5
         with:
           aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
@@ -134,8 +135,9 @@ jobs:
           function_name: rapidapi-prod-testing-worker
           zip_file: worker.zip
           handler: dist/src/main.execute
+          description: "aws:states:opt-out"
       - name: Deploy worker to production ap-east-1
-        uses: appleboy/lambda-action@v0.1.3
+        uses: appleboy/lambda-action@v0.1.5
         with:
           aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
@@ -143,8 +145,9 @@ jobs:
           function_name: rapidapi-prod-testing-worker
           zip_file: worker.zip
           handler: dist/src/main.execute
+          description: "aws:states:opt-out"
       - name: Deploy worker to production ap-south-1
-        uses: appleboy/lambda-action@v0.1.3
+        uses: appleboy/lambda-action@v0.1.5
         with:
           aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
@@ -152,8 +155,9 @@ jobs:
           function_name: rapidapi-prod-testing-worker
           zip_file: worker.zip
           handler: dist/src/main.execute
+          description: "aws:states:opt-out"
       - name: Deploy worker to production ap-southeast-1
-        uses: appleboy/lambda-action@v0.1.3
+        uses: appleboy/lambda-action@v0.1.5
         with:
           aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
@@ -161,8 +165,9 @@ jobs:
           function_name: rapidapi-prod-testing-worker
           zip_file: worker.zip
           handler: dist/src/main.execute
+          description: "aws:states:opt-out"
       - name: Deploy worker to production ap-northeast-1
-        uses: appleboy/lambda-action@v0.1.3
+        uses: appleboy/lambda-action@v0.1.5
         with:
           aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
@@ -170,8 +175,9 @@ jobs:
           function_name: rapidapi-prod-testing-worker
           zip_file: worker.zip
           handler: dist/src/main.execute
+          description: "aws:states:opt-out"
       - name: Deploy worker to production eu-central-1
-        uses: appleboy/lambda-action@v0.1.3
+        uses: appleboy/lambda-action@v0.1.5
         with:
           aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
@@ -179,8 +185,9 @@ jobs:
           function_name: rapidapi-prod-testing-worker
           zip_file: worker.zip
           handler: dist/src/main.execute
+          description: "aws:states:opt-out"
       - name: Deploy worker to production eu-west-3
-        uses: appleboy/lambda-action@v0.1.3
+        uses: appleboy/lambda-action@v0.1.5
         with:
           aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
@@ -188,8 +195,9 @@ jobs:
           function_name: rapidapi-prod-testing-worker
           zip_file: worker.zip
           handler: dist/src/main.execute
+          description: "aws:states:opt-out"
       - name: Deploy worker to production sa-east-1
-        uses: appleboy/lambda-action@v0.1.3
+        uses: appleboy/lambda-action@v0.1.5
         with:
           aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
@@ -197,3 +205,4 @@ jobs:
           function_name: rapidapi-prod-testing-worker
           zip_file: worker.zip
           handler: dist/src/main.execute
+          description: "aws:states:opt-out"
