@@ -13,7 +13,11 @@ async function executeTest(testExecution, locationDetails) {
       ...testExecution.envVariables,
     });
     try {
-      testResult = await executable.eval(context, testExecution.test.timeoutSeconds);
+      testResult = await executable.eval(
+        context,
+        testExecution.test.timeoutSeconds,
+        testExecution.test.stepTimeoutSeconds
+      );
     } catch (e) {
       consola.warn("Failed to execute test");
       consola.warn(e);
