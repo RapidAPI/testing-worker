@@ -45,19 +45,40 @@ async function executeTest(testExecution, locationDetails) {
     headers["x-location-context"] = locationDetails.locationContext;
   }
 
-  await axios.post(
-    // eslint-disable-next-line
-    `${locationDetails.baseUrl}/api/location/${locationDetails.locationKey}/execution/${testExecution.testExecution.id}`,
-    {
-      result: testResult,
-      api: testExecution.test.api,
-      apiParentOwnerId: testExecution.apiParentOwnerId,
-    },
-    {
-      headers,
-      timeout: 15000,
-    }
-  );
+  // Send the request back to the testing service, but retry up to 5 times if it fails.
+  async function reportTestResult() {
+    let retry = 1;
+    const interval = setInterval(async () => {
+      try {
+        await axios.post(
+          // eslint-disable-next-line
+          `${locationDetails.baseUrl}/api/location/${locationDetails.locationKey}/execution/${testExecution.testExecution.id}`,
+          {
+            result: testResult,
+            api: testExecution.test.api,
+            apiParentOwnerId: testExecution.apiParentOwnerId,
+          },
+          {
+            headers,
+            timeout: 15000,
+          }
+        );
+        clearInterval(interval);
+      } catch (e) {
+        if (retry >= 10) {
+          consola.error(
+            `Failed to report test execution ${testExecution.testExecution.id} (${retry}) times. Giving up.`);
+          clearInterval(interval);
+        } else {
+          consola.error(
+            `Failed to report test execution ${testExecution.testExecution.id} (${retry}) times. Retrying...`);
+          retry += 1;
+        }
+      }
+    }, 3000);
+  }
+
+  reportTestResult();
 }
 
 async function fetchAndExecuteTests({ baseUrl, locationSecret, locationKey, locationContext, batchSize, logging }) {
@@ -93,7 +114,7 @@ async function fetchAndExecuteTests({ baseUrl, locationSecret, locationKey, loca
           return executeTest(testExecution, { baseUrl, locationSecret, locationKey, locationContext, batchSize });
         } catch (e) {
           // eslint-disable-next-line
-          console.error(e);
+          console.error("4444", e);
         }
       }
     })
