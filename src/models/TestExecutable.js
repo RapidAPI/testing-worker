@@ -52,7 +52,7 @@ class TestExecutable {
     this.actions = actions;
   }
 
-  async eval(context, timeoutSeconds = 300) {
+  async eval(context, timeoutSeconds = 300, stepTimeoutSeconds = 15) {
     //todo recursion
     var cancelled = false;
 
@@ -76,13 +76,14 @@ class TestExecutable {
         if (cancelled) {
           break;
         }
-        //1. materealize parameters -- recurcive replace based on context
+        // 1. materialize parameters -- recursive replace based on context
+
         action.updateParameters(recursiveReplace(action.parameters, context.data));
 
         let result = { contextWrites: [], apiCalls: [], actionReports: [] };
         //2. evaluate action
         try {
-          result = Object.assign(result, await action.eval(context));
+          result = Object.assign(result, await action.eval(context, stepTimeoutSeconds));
         } catch (e) {
           result.actionReports = [
             {

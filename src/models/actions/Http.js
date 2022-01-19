@@ -16,7 +16,7 @@ class Http extends BaseAction {
     }
   }
 
-  async eval(context) {
+  async eval(context, stepTimeoutSeconds = 15) {
     // fetch axios instance from context or create one if does not exist
     // this "shared" axios instance is used to ensure that cookies are properly passed between requests
     let transport;
@@ -47,7 +47,8 @@ class Http extends BaseAction {
     let response;
     const t0 = performance.now();
     let requestObj;
-    const timeoutSeconds = (this.parameters.options && this.parameters.options.timeout) || 15;
+    const timeoutSeconds = (this.parameters.options && this.parameters.options.timeout) || stepTimeoutSeconds;
+
     requestObj = {
       url: this.parameters.url,
       method: this.method,
