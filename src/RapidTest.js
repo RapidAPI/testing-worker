@@ -67,11 +67,13 @@ async function executeTest(testExecution, locationDetails) {
       } catch (e) {
         if (retry >= 10) {
           consola.error(
-            `Failed to report test execution ${testExecution.testExecution.id} (${retry}) times. Giving up.`);
+            `Failed to report test execution ${testExecution.testExecution.id} (${retry}) times. Giving up.`
+          );
           clearInterval(interval);
         } else {
           consola.error(
-            `Failed to report test execution ${testExecution.testExecution.id} (${retry}) times. Retrying...`);
+            `Failed to report test execution ${testExecution.testExecution.id} (${retry}) times. Retrying...`
+          );
           retry += 1;
         }
       }
