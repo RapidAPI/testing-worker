@@ -49,19 +49,42 @@ async function executeTest(testExecution, locationDetails) {
     headers["x-location-context"] = locationDetails.locationContext;
   }
 
-  await axios.post(
-    // eslint-disable-next-line
-    `${locationDetails.baseUrl}/api/location/${locationDetails.locationKey}/execution/${testExecution.testExecution.id}`,
-    {
-      result: testResult,
-      api: testExecution.test.api,
-      apiParentOwnerId: testExecution.apiParentOwnerId,
-    },
-    {
-      headers,
-      timeout: 15000,
-    }
-  );
+  // Send the request back to the testing service, but retry up to 10 times if it fails.
+  async function reportTestResult() {
+    return new Promise((resolve, reject) => {
+      let retry = 1;
+      const interval = setInterval(async () => {
+        try {
+          await axios.post(
+            // eslint-disable-next-line
+            `${locationDetails.baseUrl}/api/location/${locationDetails.locationKey}/execution/${testExecution.testExecution.id}`,
+            {
+              result: testResult,
+              api: testExecution.test.api,
+              apiParentOwnerId: testExecution.apiParentOwnerId,
+            },
+            {
+              headers,
+              timeout: 15000,
+            }
+          );
+          clearInterval(interval);
+          resolve();
+        } catch (e) {
+          if (retry >= 10) {
+            clearInterval(interval);
+            reject(`Failed to report test execution ${testExecution.testExecution.id} (${retry}) times. Giving up.`);
+          } else {
+            consola.warn(
+              `Failed to report test execution ${testExecution.testExecution.id} (${retry}) times. Retrying...`
+            );
+            retry += 1;
+          }
+        }
+      }, 3000);
+    });
+  }
+  await reportTestResult();
 }
 
 async function fetchAndExecuteTests({ baseUrl, locationSecret, locationKey, locationContext, batchSize, logging }) {
