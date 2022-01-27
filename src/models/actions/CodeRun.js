@@ -33,7 +33,12 @@ class CodeRun extends BaseAction {
         if (typeof customFunc !== "function") {
           throw new Error(`"Code Run" must export a function as follows: module.exports = (context) => {}`);
         }
-        customFunc(context.data)
+
+        let promiseOrResult = customFunc(context.data);
+        if (!(promiseOrResult instanceof Promise)) {
+          promiseOrResult = Promise.resolve(promiseOrResult);
+        }
+        promiseOrResult
           .then((res) => {
             res = JSON.stringify(res);
             if (res) res = JSON.parse(res);
