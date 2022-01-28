@@ -80,4 +80,96 @@ describe("CodeRun", () => {
     expect($result.actionReports.length).toBe(1);
     expect($result.actionReports[0].success).toBe(true);
   });
+  describe("imports", () => {
+    it("should import allowed libs", async () => {
+      let $action = new CodeRun({
+        code: `module.exports = (context) => {
+                  const assert = require("assert");
+                  const crypto = require("crypto");
+              }`,
+      });
+      let $context = new Context({});
+      let $result = await $action.eval($context);
+      expect($result.actionReports[0].success).toBe(true);
+      expect($result.actionReports[0].shortSummary).toBe(`Code executed successfully`);
+    });
+
+    it("should not import libs not in whitelist", async () => {
+      let $action = new CodeRun({
+        code: `module.exports = (context) => {
+                  const assert = require("fs");
+              }`,
+      });
+      let $context = new Context({});
+      let $result = await $action.eval($context);
+      expect($result.actionReports[0].success).toBe(false);
+      expect($result.actionReports[0].shortSummary).toBe(`Access denied to require 'fs'`);
+    });
+
+    it("should fail when assert is thrown", async () => {
+      let $action = new CodeRun({
+        code: `module.exports = (context) => {
+            const assert = require("assert");
+            assert.equal(1,2, "assert failed");
+      }`,
+      });
+      let $context = new Context({});
+      let $result = await $action.eval($context);
+
+      expect($result.actionReports[0].success).toBe(false);
+      expect($result.actionReports[0].shortSummary).toBe(`assert failed`);
+    });
+  });
+
+  describe("returns Promise", () => {
+    it("should succeed when returning a promise", async () => {
+      let $action = new CodeRun({
+        code: `module.exports = (context) => {
+                  return new Promise((resolve, reject)=>{
+                    resolve({
+                      value: "hello"
+                    });
+                  })
+              }`,
+      });
+
+      let $context = new Context({});
+      let $result = await $action.eval($context);
+
+      expect($result.actionReports[0].success).toBe(true);
+      expect(JSON.parse($result.actionReports[0].longSummary).returnedData.value).toBe("hello");
+    });
+
+    it("should fail when code rejects", async () => {
+      let $action = new CodeRun({
+        code: `module.exports = (context) => {
+                  return new Promise((resolve, reject)=>{
+                    reject("fail")
+                  })
+              }`,
+      });
+      let $context = new Context({});
+      let $result = await $action.eval($context);
+
+      expect($result.actionReports[0].success).toBe(false);
+      expect($result.actionReports[0].shortSummary).toBe(`fail`);
+    });
+
+    it("should fail when assert is thrown", async () => {
+      let $action = new CodeRun({
+        code: `module.exports = (context) => {
+                  return new Promise((resolve, reject)=>{
+                    const assert = require("assert");
+                    assert.equal(1,2, "assert failed");
+                    resolve({});
+                  })
+              }`,
+      });
+      let $context = new Context({});
+      let $result = await $action.eval($context);
+
+      expect($result.actionReports[0].success).toBe(false);
+      expect($result.actionReports[0].shortSummary).toBe(`assert failed`);
+    });
+  });
 });
