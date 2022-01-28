@@ -75,13 +75,17 @@ class Http extends BaseAction {
         //request was not successful
         const t1 = performance.now();
         const elapsedTime = t1 - t0;
+        let shortSummary = e.message;
+        if (e.code === "ENOTFOUND") {
+          shortSummary = `Network error - no response from ${this.parameters.url}`;
+        }
         return {
           response,
           actionReports: [
             {
               action: `Http.${this.method.toLowerCase()}`,
               success: false,
-              shortSummary: `Network error - no response from ${this.parameters.url}`,
+              shortSummary,
               longSummary: null,
               time: elapsedTime,
             },
