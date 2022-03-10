@@ -83,4 +83,48 @@ describe("FakerGenerate", () => {
     expect($result.actionReports[0].shortSummary).toBe("Got invalid function invaliddddd");
     expect(typeof $result.actionReports[0].time).toBe("number");
   });
+
+  describe("with parameters", () => {
+    it("should generate a fake date between two years", async () => {
+      let $action = new FakerGenerate({
+        variable: "b",
+        category: "date",
+        function: "between",
+        parameters: ["2011", "2012"],
+      });
+      let $context = new Context({ varName: 815 });
+      let $result = await $action.eval($context);
+
+      expect($result.actionReports.length).toBe(1);
+      expect($result.actionReports[0].success).toBe(true);
+      expect($result.actionReports[0].shortSummary).not.toContain("Invalid");
+    });
+
+    it("should pass a string value", async () => {
+      let $action = new FakerGenerate({
+        variable: "b",
+        category: "date",
+        function: "between",
+        parameters: ['"10/22/2011"', 2012],
+      });
+      let $context = new Context({ varName: 815 });
+      let $result = await $action.eval($context);
+
+      expect($result.actionReports[0].shortSummary).not.toContain("Invalid");
+    });
+
+    it.only("should pass undefined for missing params", async () => {
+      let $action = new FakerGenerate({
+        variable: "b",
+        category: "date",
+        function: "betweens",
+        parameters: ["2010", "", 11],
+      });
+      let $context = new Context({ varName: 815 });
+      let $result = await $action.eval($context);
+      expect($result.actionReports[0].shortSummary).toContain("Invalid");
+      const commas = $result.actionReports[0].shortSummary.split(",");
+      expect(commas.length).toBe(11);
+    });
+  });
 });
