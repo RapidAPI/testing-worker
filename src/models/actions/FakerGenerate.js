@@ -5,7 +5,6 @@ const faker = require("faker");
 class FakerGenerate extends BaseAction {
   eval(context) {
     const t0 = performance.now();
-    let value;
 
     if (!this.parameters.category) {
       return {
@@ -68,8 +67,16 @@ class FakerGenerate extends BaseAction {
         ],
       };
     }
-
-    value = faker[this.parameters.category][this.parameters.function]();
+    const params = this.parameters.parameters || [];
+    const typedParams = params.map((param) => {
+      try {
+        return JSON.parse(param);
+      } catch (e) {
+        // This could be just an empty string, in this case the item in the array
+        // will be set to undefined. This is valid.
+      }
+    });
+    const value = faker[this.parameters.category][this.parameters.function](...typedParams);
     context.set(this.parameters.variable, value);
     return {
       actionReports: [
