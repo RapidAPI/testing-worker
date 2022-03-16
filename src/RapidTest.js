@@ -8,9 +8,8 @@ async function executeTest(testExecution, locationDetails) {
   try {
     executable = new TestExecutable(JSON.parse(testExecution.test.code));
     context = new Context({
-      c: "a",
-      ...testExecution.testVariables,
       ...testExecution.envVariables,
+      ...testExecution.testVariables,
     });
     try {
       testResult = await executable.eval(
