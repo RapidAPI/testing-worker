@@ -17,6 +17,27 @@ class Http extends BaseAction {
     }
   }
 
+  makeRequestObject(parameters, stepTimeoutSeconds) {
+    let requestObj;
+    const timeoutSeconds = (parameters.options && parameters.options.timeout) || stepTimeoutSeconds;
+
+    requestObj = {
+      url: parameters.url,
+      method: this.method,
+      params: parameters.params,
+      headers: parameters.headers,
+      timeout: 1000 * timeoutSeconds,
+    };
+    if (this.method.toLowerCase() != "get") {
+      // handle json payload
+      if (parameters.payload && typeof parameters.payload == "object" && Object.keys(parameters.payload).length > 0) {
+        parameters.payload = JSON.stringify(parameters.payload, null, 4);
+      }
+      requestObj.data = parameters.payload && parameters.payload.length > 0 ? parameters.payload : parameters.form;
+    }
+    return requestObj;
+  }
+
   async eval(context, stepTimeoutSeconds = 15) {
     // fetch axios instance from context or create one if does not exist
     // this "shared" axios instance is used to ensure that cookies are properly passed between requests
@@ -47,28 +68,10 @@ class Http extends BaseAction {
 
     let response;
     const t0 = performance.now();
-    let requestObj;
-    const timeoutSeconds = (this.parameters.options && this.parameters.options.timeout) || stepTimeoutSeconds;
+    const requestObj = this.makeRequestObject(this.parameters, stepTimeoutSeconds);
+    // used for report only
+    const safeRequestObj = this.makeRequestObject(this.safeParameters, stepTimeoutSeconds);
 
-    requestObj = {
-      url: this.parameters.url,
-      method: this.method,
-      params: this.parameters.params,
-      headers: this.parameters.headers,
-      timeout: 1000 * timeoutSeconds,
-    };
-    if (this.method.toLowerCase() != "get") {
-      // handle json payload
-      if (
-        this.parameters.payload &&
-        typeof this.parameters.payload == "object" &&
-        Object.keys(this.parameters.payload).length > 0
-      ) {
-        this.parameters.payload = JSON.stringify(this.parameters.payload, null, 4);
-      }
-      requestObj.data =
-        this.parameters.payload && this.parameters.payload.length > 0 ? this.parameters.payload : this.parameters.form;
-    }
     try {
       response = await transport.request(requestObj);
     } catch (e) {
@@ -113,13 +116,15 @@ class Http extends BaseAction {
     const t1 = performance.now();
     const elapsedTime = t1 - t0;
     response.time = elapsedTime;
-    let rawRequest = response.request._header + "\n";
-    if (this.method.toLowerCase() != "get") {
-      rawRequest += typeof requestObj.data == "object" ? JSON.stringify(requestObj.data, null, 4) : requestObj.data;
-    }
 
-    // strip all passwords, etc out of the request results
-    const rawRequestCleaned = JSON.parse(removeSensitiveData(JSON.stringify(rawRequest), context.getSecrets()));
+    // Perform an ad-hoc filtering of the response.request object for sensitive passwords because
+    // we no longer have the context of the {{template}} values
+    let rawRequest = removeSensitiveData(response.request._header, context.getSecretValues()) + "\n";
+    if (this.method.toLowerCase() != "get") {
+      // use safeRequestObj to omit sensitive data
+      rawRequest +=
+        typeof safeRequestObj.data == "object" ? JSON.stringify(safeRequestObj.data, null, 4) : safeRequestObj.data;
+    }
 
     return {
       response,
@@ -144,7 +149,7 @@ class Http extends BaseAction {
             {
               responseBody: response.data,
               responseHeaders: response.headers,
-              request: rawRequestCleaned,
+              request: rawRequest,
             },
             null,
             4

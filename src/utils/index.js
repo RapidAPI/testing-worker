@@ -40,9 +40,10 @@ module.exports.pick = (obj, props) => {
     return o;
   }, {});
 };
+
 /**
  * Searches the provided string for any values in the secrets array and replaces
- * them.
+ * them. Use this as a last resort alternative to `safeParameters`
  */
 module.exports.removeSensitiveData = (stringData, secrets, substitute = "****") => {
   let cleanData = stringData;
@@ -55,6 +56,5 @@ module.exports.removeSensitiveData = (stringData, secrets, substitute = "****") 
     const regexp = new RegExp(escapedSecret, "g");
     cleanData = cleanData.replace(regexp, substitute);
   });
-
   return cleanData;
 };
