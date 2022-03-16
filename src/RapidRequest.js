@@ -89,8 +89,8 @@ const processRequest = async (req) => {
 
 const executeRequest = async (request) => {
   const context = new Context({
-    ...(request.testVariables || {}),
     ...(request.envVariables || {}),
+    ...(request.testVariables || {}),
   });
   const transformedRequest = recursiveReplace(request.request, context.data);
 
