@@ -13,7 +13,7 @@ describe("Http", () => {
 
   beforeEach(() => {
     axios = require("axios");
-    axios.mockReset();
+    axios.create.mockClear();
     axiosCookieJarSupport = require("axios-cookiejar-support");
     axiosCookieJarSupport.default.mockReset();
 
@@ -241,7 +241,7 @@ describe("Http", () => {
     expect($result.actionReports.length).toBe(1);
     expect($result.actionReports[0].action).toBe("Http.delete");
     expect($result.actionReports[0].success).toBe(false);
-    expect($result.actionReports[0].shortSummary).toBe("Network error - no response from invalidUrl");
+    expect($result.actionReports[0].shortSummary).toBe("bad!");
     expect(typeof $result.actionReports[0].time).toBe("number");
     expect($result.contextWrites).toBeUndefined();
     expect($result.apiCalls).toBeUndefined();
@@ -316,7 +316,7 @@ describe("Http", () => {
       });
     });
 
-    it.only("passes `rejectUnauthorized` set to custom httpsAgent when `ignoreSSL` is set to true", async () => {
+    it("passes `rejectUnauthorized` set to custom httpsAgent when `ignoreSSL` is set to true", async () => {
       global.settings = {
         ignoreSSL: "true",
       };
