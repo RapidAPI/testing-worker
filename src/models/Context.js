@@ -1,6 +1,15 @@
 class Context {
-  constructor(data = {}) {
+  constructor(data = {}, secrets = []) {
     this.data = data;
+    this.secrets = secrets;
+  }
+
+  /**
+   * Return a list of secret values used to filter out
+   * sensitive data from test execution results.
+   */
+  getSecrets() {
+    return this.secrets;
   }
 
   get(path) {

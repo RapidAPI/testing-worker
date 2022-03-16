@@ -40,3 +40,21 @@ module.exports.pick = (obj, props) => {
     return o;
   }, {});
 };
+/**
+ * Searches the provided string for any values in the secrets array and replaces
+ * them.
+ */
+module.exports.removeSensitiveData = (stringData, secrets, substitute = "****") => {
+  let cleanData = stringData;
+  function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  secrets.forEach((secret) => {
+    const escapedSecret = escapeRegExp(secret);
+    const regexp = new RegExp(escapedSecret, "g");
+    cleanData = cleanData.replace(regexp, substitute);
+  });
+
+  return cleanData;
+};
