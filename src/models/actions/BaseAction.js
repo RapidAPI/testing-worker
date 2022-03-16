@@ -1,6 +1,7 @@
 class BaseAction {
   constructor(parameters = {}) {
-    this.parameters = parameters;
+    this.parameters = { ...parameters };
+    this.safeParameters = { ...parameters };
   }
 
   updateParameters(parameters) {
