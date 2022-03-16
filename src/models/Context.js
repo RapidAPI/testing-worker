@@ -1,15 +1,23 @@
 class Context {
-  constructor(data = {}, secrets = []) {
+  constructor(data = {}, secrets = {}, mask = "****") {
     this.data = data;
     this.secrets = secrets;
+    this.safeData = {};
+    for (const key of Object.keys(this.data)) {
+      if (this.secrets[key]) {
+        this.safeData[key] = mask;
+      } else {
+        this.safeData[key] = this.data[key];
+      }
+    }
   }
 
   /**
-   * Return a list of secret values used to filter out
-   * sensitive data from test execution results.
+   * Return a list of secret values used to perform ad-hoc filtered of
+   * sensitive data after templates has been processed.
    */
-  getSecrets() {
-    return this.secrets;
+  getSecretValues() {
+    return Object.values(this.secrets);
   }
 
   get(path) {

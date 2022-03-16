@@ -4,7 +4,18 @@ class BaseAction {
   }
 
   updateParameters(parameters) {
-    this.parameters = parameters;
+    this.parameters = {
+      ...parameters,
+    };
+  }
+
+  /**
+   * Used to mask sensitive data
+   */
+  updateSafeParameters(parameters) {
+    this.safeParameters = {
+      ...parameters,
+    };
   }
 
   async eval() {

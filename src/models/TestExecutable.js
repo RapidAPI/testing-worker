@@ -78,7 +78,9 @@ class TestExecutable {
         }
         // 1. materialize parameters -- recursive replace based on context
 
-        action.updateParameters(recursiveReplace(action.parameters, context.data));
+        const originalParameters = { ...action.parameters };
+        action.updateParameters(recursiveReplace(originalParameters, context.data));
+        action.updateSafeParameters(recursiveReplace(originalParameters, context.safeData));
 
         let result = { contextWrites: [], apiCalls: [], actionReports: [] };
         //2. evaluate action
