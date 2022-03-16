@@ -6,6 +6,7 @@ const axiosCookieJarSupport = require("axios-cookiejar-support").default;
 const tough = require("tough-cookie");
 const { performance } = require("perf_hooks");
 const xmlConvert = require("xml-js");
+const { removeSensitiveData } = require("../../utils");
 
 class Http extends BaseAction {
   get method() {
@@ -117,6 +118,9 @@ class Http extends BaseAction {
       rawRequest += typeof requestObj.data == "object" ? JSON.stringify(requestObj.data, null, 4) : requestObj.data;
     }
 
+    // strip all passwords, etc out of the request results
+    const rawRequestCleaned = JSON.parse(removeSensitiveData(JSON.stringify(rawRequest), context.getSecrets()));
+
     return {
       response,
       contextWrites: [{ key: this.parameters.variable, value: response }],
@@ -140,7 +144,7 @@ class Http extends BaseAction {
             {
               responseBody: response.data,
               responseHeaders: response.headers,
-              request: rawRequest,
+              request: rawRequestCleaned,
             },
             null,
             4

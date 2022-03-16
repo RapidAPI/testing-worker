@@ -7,10 +7,13 @@ async function executeTest(testExecution, locationDetails) {
   let error;
   try {
     executable = new TestExecutable(JSON.parse(testExecution.test.code));
-    context = new Context({
-      ...testExecution.envVariables,
-      ...testExecution.testVariables,
-    });
+    context = new Context(
+      {
+        ...testExecution.envVariables,
+        ...testExecution.testVariables,
+      },
+      testExecution.envSecrets // used to mask sensitive context data in the report
+    );
     try {
       testResult = await executable.eval(
         context,
@@ -107,7 +110,7 @@ async function fetchAndExecuteTests({ baseUrl, locationSecret, locationKey, loca
 
   if (logging) consola.info("Test executions:\n");
   // eslint-disable-next-line
-  if (logging) console.info(testExecutions);
+  if (logging) consola.info(testExecutions);
 
   await Promise.all(
     testExecutions.map((testExecution) => {
