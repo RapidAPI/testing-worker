@@ -18,7 +18,7 @@ class MiscGroup extends BaseAction {
             action: "Misc.group",
             success: false,
             shortSummary: e.message,
-            longSummary: e,
+            longSummary: null,
             time: performance.now() - t0,
           },
         ],

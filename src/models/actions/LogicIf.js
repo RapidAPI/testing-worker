@@ -69,7 +69,7 @@ class LogicIf extends BaseAction {
             action: "Logic.if",
             success: false,
             shortSummary: e.message,
-            longSummary: e,
+            longSummary: null,
             time: performance.now() - t0,
           },
         ],

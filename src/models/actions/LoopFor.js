@@ -29,7 +29,8 @@ class LoopForEach extends BaseAction {
             action: "Loop.forEach",
             success: false,
             shortSummary: `Object at ${this.parameters.expression} is not an array`,
-            longSummary: `Expected an array, instead got ${typeof arr} with value: ${arr}`,
+            longSummary: JSON.stringify({ summary: `Expected an array, instead got ${typeof arr} with value: ${arr}` }),
+            //longSummary: null,
             time: performance.now() - t0,
           },
         ],
@@ -55,7 +56,7 @@ class LoopForEach extends BaseAction {
     result.actionReports.unshift({
       action: "Loop.forEach",
       success: failedCount == 0,
-      shortSummary: `Itterated over ${arr.length} elements in array ${this.parameters.expression}. ${
+      shortSummary: `Iterated over ${arr.length} elements in array ${this.parameters.expression}. ${
         result.actionReports.length - failedCount
       }/${result.actionReports.length} steps passed.`,
       longSummary: null,

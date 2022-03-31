@@ -57,9 +57,29 @@ describe("LogicIf", () => {
     };
     let $context = new Context({ varName: 815 });
     await $action.eval($context);
-
     expect($action.children.eval.called).toBeFalsy();
   });
+});
+
+it("should return an error if operator is invalid", async () => {
+  let $action = new LogicIf({
+    key: "a",
+    operator: "not_valid",
+    value: "a",
+  });
+  $action.children = {
+    eval: sinon.fake.returns({ apiCalls: [], actionReports: [] }),
+  };
+  let $context = new Context({ varName: 815 });
+  let $result = await $action.eval($context);
+
+  expect($result.actionReports.length).toBe(1);
+  expect($result.actionReports[0].action).toBe("Logic.if");
+  expect($result.actionReports[0].success).toBe(false);
+  // eslint-disable-next-line no-useless-escape
+  expect($result.actionReports[0].shortSummary).toBe('Testing for undefined operator "not_valid"');
+  expect(typeof $result.actionReports[0].time).toBe("number");
+  expect($result.actionReports[0].longSummary).toBe(null);
 });
 
 describe("compare()", () => {

@@ -80,7 +80,7 @@ describe("LoopForEach", () => {
     expect($result.actionReports.length).toBe(1);
     expect($result.actionReports[0].action).toBe("Loop.forEach");
     expect($result.actionReports[0].success).toBe(false);
-
+    expect(typeof $result.actionReports[0].longSummary).toBe("string");
     expect($action.children.eval.callCount).toBe(0);
   });
 });
