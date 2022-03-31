@@ -92,7 +92,7 @@ class TestExecutable {
               action: action.action,
               success: false,
               shortSummary: e.message,
-              longSummary: e,
+              longSummary: null,
               time: 0,
             },
           ];

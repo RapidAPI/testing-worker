@@ -113,7 +113,7 @@ describe("FakerGenerate", () => {
       expect($result.actionReports[0].shortSummary).not.toContain("Invalid");
     });
 
-    it.only("should pass undefined for missing params", async () => {
+    it("should pass undefined for missing params", async () => {
       let $action = new FakerGenerate({
         variable: "b",
         category: "date",
