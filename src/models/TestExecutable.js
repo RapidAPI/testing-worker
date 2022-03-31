@@ -27,6 +27,7 @@ const actionClasses = {
   "Assert.greater_equal": require("./actions/AssertGreaterEqual").AssertGreaterEqual,
   "Assert.smaller_equal": require("./actions/AssertSmallerEqual").AssertSmallerEqual,
   "Connector.database": require("./actions/Database").Database,
+  "Execute.Fragment": require("./actions/ExecuteFragment").ExecuteFragment,
 };
 
 class TestExecutable {
@@ -44,6 +45,8 @@ class TestExecutable {
       let MaterialClass = actionClasses[step.action];
       let materialStep = new MaterialClass(step.parameters);
       materialStep.action = step.action;
+      materialStep.errorFromService = step.errorFromService || null; // used to force a pre-execution error from the testing service.
+
       if (Object.prototype.hasOwnProperty.call(step, "children")) {
         materialStep.children = new TestExecutable(step.children);
       }
@@ -57,6 +60,7 @@ class TestExecutable {
     var cancelled = false;
 
     let actions = this.actions.map((a) => Object.assign(Object.create(Object.getPrototypeOf(a)), a)); //deep clone actions so parameter materialization is scoped
+
     let _apiCalls = [];
     let _actionReports = [];
 
