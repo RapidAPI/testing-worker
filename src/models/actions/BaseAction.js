@@ -1,7 +1,9 @@
 class BaseAction {
   constructor(parameters = {}) {
     this.parameters = { ...parameters };
-    this.safeParameters = { ...parameters };
+    // make a deep copy
+    var copy = JSON.parse(JSON.stringify(parameters));
+    this.safeParameters = copy;
   }
 
   updateParameters(parameters) {
