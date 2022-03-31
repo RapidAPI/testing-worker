@@ -3,9 +3,14 @@ class Context {
     this.data = data;
     this.secrets = secrets;
     this.safeData = {};
+    this.mask = mask;
+    this.maskSafeData();
+  }
+
+  maskSafeData() {
     for (const key of Object.keys(this.data)) {
       if (this.secrets[key]) {
-        this.safeData[key] = mask;
+        this.safeData[key] = this.mask;
       } else {
         this.safeData[key] = this.data[key];
       }
@@ -30,6 +35,8 @@ class Context {
 
   set(key, value) {
     this.data[key] = value;
+    // rebuild safeData from new data
+    this.maskSafeData();
   }
 }
 
