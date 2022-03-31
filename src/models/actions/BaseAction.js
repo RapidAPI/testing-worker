@@ -4,6 +4,7 @@ class BaseAction {
     // make a deep copy
     var copy = JSON.parse(JSON.stringify(parameters));
     this.safeParameters = copy;
+    this.errorFromService = null;
   }
 
   updateParameters(parameters) {

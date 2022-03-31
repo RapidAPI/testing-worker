@@ -17,6 +17,16 @@ class Context {
     }
   }
 
+  copy() {
+    const cleanedData = {
+      ...this.data
+    };
+    // Don't copy the transport object, this should be recreated for each successive http request.
+    delete cleanedData.__http_transport;
+
+    return new Context(cleanedData, {...this.secrets}, this.mask);
+  }
+
   /**
    * Return a list of secret values used to perform ad-hoc filtered of
    * sensitive data after templates has been processed.
