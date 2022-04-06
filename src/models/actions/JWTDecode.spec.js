@@ -19,10 +19,9 @@ describe("JWTDecode", () => {
     );
     expect(typeof $result.actionReports[0].time).toBe("number");
 
-    // verify context write was performed
-    expect(Object.keys($context.data)).toContain("b");
-    expect(typeof $context.get("b")).toBe("object");
-    expect($context.get("b")).toEqual({ hello: "jwt" });
+    // verify context write was passed
+    expect($result.contextWrites[0].key).toBe("b");
+    expect($result.contextWrites[0].value).toEqual({ hello: "jwt" });
   });
 
   it("should decode token when not passed a secret", async () => {
@@ -42,9 +41,8 @@ describe("JWTDecode", () => {
     expect(typeof $result.actionReports[0].time).toBe("number");
 
     // verify context write was performed
-    expect(Object.keys($context.data)).toContain("b");
-    expect(typeof $context.get("b")).toBe("object");
-    expect($context.get("b")).toEqual({ hello: "jwt" });
+    expect($result.contextWrites[0].key).toBe("b");
+    expect($result.contextWrites[0].value).toEqual({ hello: "jwt" });
   });
 
   it("should fail when passed the wrong secret", async () => {
