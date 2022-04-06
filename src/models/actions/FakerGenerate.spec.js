@@ -2,7 +2,7 @@ const { FakerGenerate } = require("./FakerGenerate");
 const Context = require("../Context");
 
 describe("FakerGenerate", () => {
-  it("should properly generate a fake nad place in context", async () => {
+  it("should properly generate a fake and place in context", async () => {
     let $action = new FakerGenerate({
       variable: "b",
       category: "name",
@@ -17,9 +17,9 @@ describe("FakerGenerate", () => {
     expect(typeof $result.actionReports[0].shortSummary).toBe("string");
     expect(typeof $result.actionReports[0].time).toBe("number");
 
-    // verify context write was performed
-    expect(Object.keys($context.data)).toContain("b");
-    expect(typeof $context.get("b")).toBe("string");
+    // verify contextWrites was passed
+    expect($result.contextWrites[0].key).toBe("b");
+    expect($result.contextWrites[0].value).toBeTruthy();
   });
 
   it("should fail if no category is passed", async () => {

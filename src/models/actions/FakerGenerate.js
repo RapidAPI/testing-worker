@@ -77,8 +77,9 @@ class FakerGenerate extends BaseAction {
       }
     });
     const value = faker[this.parameters.category][this.parameters.function](...typedParams);
-    context.set(this.parameters.variable, value);
+    const contextWrites = [{key: this.parameters.variable, value}];
     return {
+      contextWrites,
       actionReports: [
         {
           action: "Faker.generate",
