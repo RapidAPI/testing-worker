@@ -17,9 +17,9 @@ describe("JWTEncode", () => {
     expect($result.actionReports[0].shortSummary).toBe('Encoded {a:"b"}');
     expect(typeof $result.actionReports[0].time).toBe("number");
 
-    // verify context write was performed
-    expect(Object.keys($context.data)).toContain("b");
-    expect(typeof $context.get("b")).toBe("string");
+    // verify context write was passed
+    expect($result.contextWrites[0].key).toBe("b");
+    expect(typeof $result.contextWrites[0].value).toBe("string");
   });
   it("should encode value and set it in context with header", async () => {
     let $action = new JWTEncode({
@@ -37,8 +37,8 @@ describe("JWTEncode", () => {
     expect($result.actionReports[0].shortSummary).toBe('Encoded {a:"b"}');
     expect(typeof $result.actionReports[0].time).toBe("number");
 
-    // verify context write was performed
-    expect(Object.keys($context.data)).toContain("b");
-    expect(typeof $context.get("b")).toBe("string");
+    // verify context write was passed
+    expect($result.contextWrites[0].key).toBe("b");
+    expect(typeof $result.contextWrites[0].value).toBe("string");
   });
 });
