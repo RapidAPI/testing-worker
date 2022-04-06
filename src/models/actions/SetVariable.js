@@ -5,7 +5,7 @@ class SetVariable extends BaseAction {
   eval() {
     const t0 = performance.now();
 
-    const  contextWrites = [{key: this.parameters.key, value: this.parameters.value}];
+    const contextWrites = [{ key: this.parameters.key, value: this.parameters.value }];
 
     return {
       contextWrites,

@@ -10,7 +10,7 @@ class JWTDecode extends BaseAction {
       let payload;
       if (this.parameters.secret) payload = jwt.verify(this.parameters.token, this.parameters.secret);
       else payload = jwt.decode(this.parameters.token, this.parameters.secret);
-      const  contextWrites = [{key: this.parameters.variable, value: payload}];
+      const contextWrites = [{ key: this.parameters.variable, value: payload }];
       return {
         contextWrites,
         actionReports: [
