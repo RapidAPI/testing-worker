@@ -17,9 +17,9 @@ describe("CodeRun", () => {
     expect($result.actionReports[0].shortSummary).toBe("Code executed successfully");
     expect(typeof $result.actionReports[0].time).toBe("number");
 
-    // verify context write was performed
-    expect(Object.keys($context.data)).toContain("b");
-    expect($context.get("b")).toBe(1234);
+    // verify contextWrites was passed
+    expect($result.contextWrites[0].key).toBe("b");
+    expect($result.contextWrites[0].value).toEqual(1234);
   });
 
   it("should give the code access to the context", async () => {
@@ -34,9 +34,9 @@ describe("CodeRun", () => {
     expect($result.actionReports.length).toBe(1);
     expect($result.actionReports[0].success).toBe(true);
 
-    // verify context write was performed
-    expect(Object.keys($context.data)).toContain("flightName");
-    expect($context.get("flightName")).toBe("Oceanic 815");
+    // verify contextWrites was passed
+    expect($result.contextWrites[0].key).toBe("flightName");
+    expect($result.contextWrites[0].value).toEqual("Oceanic 815");
   });
 
   it("should fail when an error is thrown by the code", async () => {
@@ -67,6 +67,24 @@ describe("CodeRun", () => {
     expect($result.actionReports[0].shortSummary).toBe(
       `Code must return an object. Instead got string "not an object"`
     );
+  });
+
+  it("should return contextWrites array for key values returned from code", async () => {
+    let $action = new CodeRun({
+      code: `module.exports = (context) => {
+                return {
+                  "foo": "2",
+                  "bar": [1,2,3]
+                }
+            }`,
+    });
+    let $context = new Context({ flightNumber: 815 });
+    let $result = await $action.eval($context);
+
+    expect($result.contextWrites[0].key).toBe("foo");
+    expect($result.contextWrites[0].value).toBe("2");
+    expect($result.contextWrites[1].key).toBe("bar");
+    expect($result.contextWrites[1].value).toEqual([1,2,3]);
   });
 
   it("should not fail when code returns nothing", async () => {
