@@ -2,12 +2,13 @@ const { BaseAction } = require("./BaseAction");
 const { performance } = require("perf_hooks");
 
 class SetVariable extends BaseAction {
-  eval(context) {
+  eval() {
     const t0 = performance.now();
 
-    context.set(this.parameters.key, this.parameters.value);
+    const  contextWrites = [{key: this.parameters.key, value: this.parameters.value}];
 
     return {
+      contextWrites,
       actionReports: [
         {
           action: "Set.variable",

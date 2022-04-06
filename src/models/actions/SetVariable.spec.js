@@ -16,8 +16,8 @@ describe("SetVariable", () => {
     expect($result.actionReports[0].shortSummary).toBe("Set b = 1234");
     expect(typeof $result.actionReports[0].time).toBe("number");
 
-    // verify context write was performed
-    expect(Object.keys($context.data)).toContain("b");
-    expect($context.get("b")).toBe(1234);
+    // verify context write was passed
+    expect($result.contextWrites[0].key).toBe("b");
+    expect($result.contextWrites[0].value).toBe(1234);
   });
 });
