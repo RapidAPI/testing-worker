@@ -42,7 +42,7 @@ class JWTEncode extends BaseAction {
       };
     }
 
-    const  contextWrites = [{key: this.parameters.variable, value: token}];
+    const contextWrites = [{ key: this.parameters.variable, value: token }];
 
     return {
       contextWrites,

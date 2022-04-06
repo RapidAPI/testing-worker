@@ -84,7 +84,7 @@ describe("CodeRun", () => {
     expect($result.contextWrites[0].key).toBe("foo");
     expect($result.contextWrites[0].value).toBe("2");
     expect($result.contextWrites[1].key).toBe("bar");
-    expect($result.contextWrites[1].value).toEqual([1,2,3]);
+    expect($result.contextWrites[1].value).toEqual([1, 2, 3]);
   });
 
   it("should not fail when code returns nothing", async () => {

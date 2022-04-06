@@ -46,9 +46,9 @@ class CodeRun extends BaseAction {
             if (res && typeof res != "object") {
               throw new Error(`Code must return an object. Instead got ${typeof res} "${res}"`);
             }
-            
-            const contextWrites = Object.keys(res).map(key=>{
-              return {key: key, value: res[key]};
+
+            const contextWrites = Object.keys(res).map((key) => {
+              return { key: key, value: res[key] };
             });
 
             // happy path
