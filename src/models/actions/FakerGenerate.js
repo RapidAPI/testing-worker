@@ -3,7 +3,7 @@ const { performance } = require("perf_hooks");
 const faker = require("faker");
 
 class FakerGenerate extends BaseAction {
-  eval(context) {
+  eval() {
     const t0 = performance.now();
 
     if (!this.parameters.category) {
