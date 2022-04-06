@@ -46,14 +46,14 @@ class CodeRun extends BaseAction {
             if (res && typeof res != "object") {
               throw new Error(`Code must return an object. Instead got ${typeof res} "${res}"`);
             }
-
-            for (let rKey of Object.keys(res)) {
-              context.set(rKey, res[rKey]);
-            }
+            
+            const contextWrites = Object.keys(res).map(key=>{
+              return {key: key, value: res[key]};
+            });
 
             // happy path
             resolve({
-              contextWrites: [{ key: this.parameters.variable, value: res }],
+              contextWrites,
               actionReports: [
                 {
                   action: "Code.run",
