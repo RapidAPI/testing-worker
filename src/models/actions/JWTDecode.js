@@ -3,15 +3,16 @@ const { performance } = require("perf_hooks");
 const jwt = require("jsonwebtoken");
 
 class JWTDecode extends BaseAction {
-  eval(context) {
+  eval() {
     const t0 = performance.now();
 
     try {
       let payload;
       if (this.parameters.secret) payload = jwt.verify(this.parameters.token, this.parameters.secret);
       else payload = jwt.decode(this.parameters.token, this.parameters.secret);
-      context.set(this.parameters.variable, payload);
+      const  contextWrites = [{key: this.parameters.variable, value: payload}];
       return {
+        contextWrites,
         actionReports: [
           {
             action: "JWT.decode",
