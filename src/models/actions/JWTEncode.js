@@ -3,7 +3,7 @@ const { performance } = require("perf_hooks");
 const jwt = require("jsonwebtoken");
 
 class JWTEncode extends BaseAction {
-  eval(context) {
+  eval() {
     const t0 = performance.now();
 
     let header;
@@ -42,9 +42,10 @@ class JWTEncode extends BaseAction {
       };
     }
 
-    context.set(this.parameters.variable, token);
+    const  contextWrites = [{key: this.parameters.variable, value: token}];
 
     return {
+      contextWrites,
       actionReports: [
         {
           action: "JWT.encode",
