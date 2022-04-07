@@ -55,8 +55,7 @@ class TestExecutable {
     this.actions = actions;
   }
 
-  async eval(context, timeoutSeconds = 300, stepTimeoutSeconds = 15) {
-    //todo recursion
+  async eval(context, timeoutSeconds = 300, stepTimeoutSeconds = 15, passContextWrites = false) {
     var cancelled = false;
 
     let actions = this.actions.map((a) => Object.assign(Object.create(Object.getPrototypeOf(a)), a)); //deep clone actions so parameter materialization is scoped
@@ -75,6 +74,7 @@ class TestExecutable {
       }, timeoutSeconds * 1000);
     });
 
+    const totalContextWrites = [];
     let testExecution = (async () => {
       for (let action of actions) {
         if (cancelled) {
@@ -110,6 +110,11 @@ class TestExecutable {
         for (let cw of result.contextWrites) {
           context.set(cw.key, cw.value);
         }
+        if (passContextWrites) {
+          // Pass up the context so it can be written to the parent. This option
+          // should only be used when using a copy the parent's context
+          totalContextWrites.push(...result.contextWrites);
+        }
       }
       return FINISHED_EXECUTION;
     })();
@@ -122,6 +127,7 @@ class TestExecutable {
     let success = _actionReports.filter((a) => a.success == false).length == 0 && result === FINISHED_EXECUTION;
 
     return {
+      contextWrites: totalContextWrites, // optional
       apiCalls: _apiCalls,
       actionReports: _actionReports,
       elapsedTime,

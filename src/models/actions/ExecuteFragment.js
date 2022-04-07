@@ -2,7 +2,7 @@ const { performance } = require("perf_hooks");
 const { BaseAction } = require("./BaseAction");
 
 class ExecuteFragment extends BaseAction {
-  async eval(context) {
+  async eval(context, timeoutSeconds = 300, stepTimeoutSeconds = 15) {
     const t0 = performance.now();
 
     if (this.errorFromService) {
@@ -33,11 +33,24 @@ class ExecuteFragment extends BaseAction {
         copyContext.set(variable, this.parameters.inputs[variable]);
       }
 
-      const { apiCalls, actionReports } = await this.children.eval(copyContext);
+      // eslint-disable-next-line max-len
+      const { apiCalls, actionReports, contextWrites } = await this.children.eval(
+        copyContext,
+        timeoutSeconds,
+        stepTimeoutSeconds,
+        true
+      );
+
+      const childContext = contextWrites.reduce((prev, current) => {
+        prev[current.key] = current.value;
+        return prev;
+      }, {});
 
       return {
         apiCalls,
         actionReports: [...actionReports],
+        //  scoped contextWrite
+        contextWrites: [{ key: this.parameters.variable, value: childContext }],
       };
     } catch (e) {
       return {
