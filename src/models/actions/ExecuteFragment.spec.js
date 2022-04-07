@@ -11,6 +11,7 @@ describe("ExecuteFragment", () => {
     $action.children = {
       // fake sub-test
       eval: sinon.fake.returns({
+        contextWrites: [],
         apiCalls: [{}],
         actionReports: [
           {
@@ -24,6 +25,31 @@ describe("ExecuteFragment", () => {
     let $context = new Context({ varName: "hello" });
     let $result = await $action.eval($context);
     expect($result.actionReports[0].action).toBe("My.action");
+  });
+
+  it("should pass contextWrites array with scoped variable", async () => {
+    let $action = new ExecuteFragment({
+      testId: "test_1234",
+      variable: "childContext",
+      inputs: {},
+    });
+    $action.children = {
+      // fake sub-test
+      eval: sinon.fake.returns({
+        contextWrites: [{ key: "foo", value: "bar" }],
+        apiCalls: [{}],
+        actionReports: [
+          {
+            action: "My.action",
+            success: true,
+          },
+        ],
+      }),
+    };
+
+    let $context = new Context({ varName: "hello" });
+    let $result = await $action.eval($context);
+    expect($result.contextWrites).toEqual([{ key: "childContext", value: { foo: "bar" } }]);
   });
 
   it("should not override the context when vars don't match", async () => {
