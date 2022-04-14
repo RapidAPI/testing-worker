@@ -6,8 +6,9 @@ class MiscGroup extends BaseAction {
     const t0 = performance.now();
 
     try {
-      let { apiCalls, actionReports } = await this.children.eval(context);
+      let { apiCalls, actionReports, contextWrites } = await this.children.eval(context);
       return {
+        contextWrites,
         apiCalls,
         actionReports,
       };

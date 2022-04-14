@@ -35,8 +35,9 @@ class LogicIf extends BaseAction {
       let comparisonResult = compare(key, operator, value);
 
       if (comparisonResult) {
-        let { apiCalls, actionReports } = await this.children.eval(context);
+        let { apiCalls, actionReports, contextWrites } = await this.children.eval(context);
         return {
+          contextWrites,
           apiCalls,
           actionReports: [
             {

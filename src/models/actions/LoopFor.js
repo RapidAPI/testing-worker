@@ -38,6 +38,7 @@ class LoopForEach extends BaseAction {
     }
 
     let result = {
+      contextWrites: [],
       actionReports: [],
       apiCalls: [],
     };
@@ -45,9 +46,12 @@ class LoopForEach extends BaseAction {
     const elemName = this.parameters.variable;
 
     for (let elem of arr) {
+      // the loop variable is local only, this won't be passed up in contextWrites arrays
       context.set(elemName, elem);
-      let { apiCalls, actionReports } = await this.children.eval(context);
+
+      let { apiCalls, actionReports, contextWrites } = await this.children.eval(context);
       result.actionReports.push(...actionReports);
+      result.contextWrites.push(...contextWrites);
       result.apiCalls.push(...apiCalls);
     }
 

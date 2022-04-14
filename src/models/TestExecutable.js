@@ -55,7 +55,7 @@ class TestExecutable {
     this.actions = actions;
   }
 
-  async eval(context, timeoutSeconds = 300, stepTimeoutSeconds = 15, passContextWrites = false) {
+  async eval(context, timeoutSeconds = 300, stepTimeoutSeconds = 15) {
     var cancelled = false;
 
     let actions = this.actions.map((a) => Object.assign(Object.create(Object.getPrototypeOf(a)), a)); //deep clone actions so parameter materialization is scoped
@@ -110,11 +110,11 @@ class TestExecutable {
         for (let cw of result.contextWrites) {
           context.set(cw.key, cw.value);
         }
-        if (passContextWrites) {
-          // Pass up the context so it can be written to the parent. This option
-          // should only be used when using a copy the parent's context
-          totalContextWrites.push(...result.contextWrites);
-        }
+
+        // 5. Pass up the context. In most cases this will be redundant; however,
+        // this does need to bubble to the top for child tests to be correctly scoped
+        // into a parent.
+        totalContextWrites.push(...result.contextWrites);
       }
       return FINISHED_EXECUTION;
     })();
