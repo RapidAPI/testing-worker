@@ -10,7 +10,11 @@ describe("LogicIf", () => {
       value: "a",
     });
     $action.children = {
-      eval: sinon.fake.returns({ apiCalls: [], actionReports: [] }),
+      eval: sinon.fake.returns({
+        apiCalls: [],
+        actionReports: [],
+        contextWrites: [],
+      }),
     };
     let $context = new Context({ varName: 815 });
     let $result = await $action.eval($context);
@@ -24,6 +28,24 @@ describe("LogicIf", () => {
     expect($action.children.eval.called).toBeTruthy();
   });
 
+  it("should pass contextWrites from child eval", async () => {
+    let $action = new LogicIf({
+      key: "a",
+      operator: "==",
+      value: "a",
+    });
+    $action.children = {
+      eval: sinon.fake.returns({
+        apiCalls: [],
+        actionReports: [],
+        contextWrites: [{ key: "var", value: "foo" }],
+      }),
+    };
+    let $context = new Context({});
+    let $result = await $action.eval($context);
+    expect($result.contextWrites).toEqual([{ key: "var", value: "foo" }]);
+  });
+
   it("should chain results from children nodes", async () => {
     let $action = new LogicIf({
       key: "a",
@@ -34,6 +56,7 @@ describe("LogicIf", () => {
       eval: sinon.fake.returns({
         apiCalls: [],
         actionReports: [{ action: "fake" }],
+        contextWrites: [],
       }),
     };
     let $context = new Context({ varName: 815 });
@@ -68,7 +91,11 @@ it("should return an error if operator is invalid", async () => {
     value: "a",
   });
   $action.children = {
-    eval: sinon.fake.returns({ apiCalls: [], actionReports: [] }),
+    eval: sinon.fake.returns({
+      apiCalls: [],
+      actionReports: [],
+      contextWrites: [],
+    }),
   };
   let $context = new Context({ varName: 815 });
   let $result = await $action.eval($context);

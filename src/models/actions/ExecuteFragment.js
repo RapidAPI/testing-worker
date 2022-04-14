@@ -37,8 +37,7 @@ class ExecuteFragment extends BaseAction {
       const { apiCalls, actionReports, contextWrites } = await this.children.eval(
         copyContext,
         timeoutSeconds,
-        stepTimeoutSeconds,
-        true
+        stepTimeoutSeconds
       );
 
       const childContext = contextWrites.reduce((prev, current) => {

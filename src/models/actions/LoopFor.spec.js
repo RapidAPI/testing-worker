@@ -9,7 +9,13 @@ describe("LoopForEach", () => {
       variable: "var",
     });
     $action.children = {
-      eval: sinon.spy(sinon.fake.returns({ apiCalls: [], actionReports: [] })),
+      eval: sinon.spy(
+        sinon.fake.returns({
+          apiCalls: [],
+          actionReports: [],
+          contextWrites: [],
+        })
+      ),
     };
     let $context = new Context({ arr: [1, 2, 3, 4, 5] });
     let $result = await $action.eval($context);
@@ -31,6 +37,7 @@ describe("LoopForEach", () => {
         sinon.fake.returns({
           apiCalls: [],
           actionReports: [{ action: "fake", success: true }],
+          contextWrites: [],
         })
       ),
     };
@@ -48,13 +55,44 @@ describe("LoopForEach", () => {
     expect($action.children.eval.callCount).toBe(5);
   });
 
+  it("should pass contextWrites for each loop", async () => {
+    let $action = new LoopForEach({
+      expression: "arr",
+      variable: "var",
+    });
+    $action.children = {
+      eval: sinon.spy(
+        sinon.fake.returns({
+          apiCalls: [],
+          actionReports: [{ action: "fake", success: true }],
+          contextWrites: [{ key: "var", value: "foo" }],
+        })
+      ),
+    };
+    let $context = new Context({ arr: [1, 2, 3, 4, 5] });
+    let $result = await $action.eval($context);
+    expect($result.contextWrites).toEqual([
+      { key: "var", value: "foo" },
+      { key: "var", value: "foo" },
+      { key: "var", value: "foo" },
+      { key: "var", value: "foo" },
+      { key: "var", value: "foo" },
+    ]);
+  });
+
   it("should return error if array does not exist", async () => {
     let $action = new LoopForEach({
       expression: "missing_arr",
       variable: "var",
     });
     $action.children = {
-      eval: sinon.spy(sinon.fake.returns({ apiCalls: [], actionReports: [] })),
+      eval: sinon.spy(
+        sinon.fake.returns({
+          apiCalls: [],
+          actionReports: [],
+          contextWrites: [],
+        })
+      ),
     };
     let $context = new Context({ arr: [1, 2, 3, 4, 5] });
     let $result = await $action.eval($context);
@@ -72,7 +110,13 @@ describe("LoopForEach", () => {
       variable: "var",
     });
     $action.children = {
-      eval: sinon.spy(sinon.fake.returns({ apiCalls: [], actionReports: [] })),
+      eval: sinon.spy(
+        sinon.fake.returns({
+          apiCalls: [],
+          actionReports: [],
+          contextWrites: [],
+        })
+      ),
     };
     let $context = new Context({ not_an_arr: "Lo" });
     let $result = await $action.eval($context);
