@@ -30,14 +30,19 @@ async function executeTest(testExecution, locationDetails) {
     consola.error(e);
     error = e;
   } finally {
-    testResult = testResult || {
-      apiCalls: [],
-      elapsedTime: 0,
-      success: false,
-      error: error?.message,
-      actionReports: [],
-      timedOut: false,
-    };
+    if (testResult) {
+      // remove internal data not to be returned to the service
+      delete testResult.contextWrites;
+    } else {
+      testResult = {
+        apiCalls: [],
+        elapsedTime: 0,
+        success: false,
+        error: error?.message,
+        actionReports: [],
+        timedOut: false,
+      };
+    }
   }
 
   const headers = {
