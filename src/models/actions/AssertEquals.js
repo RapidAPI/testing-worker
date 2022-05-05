@@ -38,9 +38,9 @@ class AssertEquals extends BaseAction {
           {
             action: "Assert.equals",
             success: false,
-            shortSummary: `${this.parameters.expression} is "${context.get(this.parameters.expression)}", expected "${
+            shortSummary: `${this.parameters.expression} is "${value}" (${typeof value}), expected "${
               this.parameters.value
-            }"`,
+            }" (${typeof this.parameters.value})`,
             longSummary: null,
             time: performance.now() - t0,
           },

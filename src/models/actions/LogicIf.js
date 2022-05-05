@@ -57,7 +57,12 @@ class LogicIf extends BaseAction {
               action: "Logic.if",
               success: true,
               shortSummary: "Comparison was negative",
-              longSummary: JSON.stringify({ summary: `"${key}" ${operator} "${value}" is false` }, null, 4),
+              // eslint-disable-next-line max-len
+              longSummary: JSON.stringify(
+                { summary: `"${key}" (${typeof key}) ${operator} "${value}" (${typeof key}) is false` },
+                null,
+                4
+              ),
               time: performance.now() - t0,
             },
           ],

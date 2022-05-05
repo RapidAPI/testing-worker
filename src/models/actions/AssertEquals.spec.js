@@ -28,7 +28,7 @@ describe("AssertEquals", () => {
     expect($result.actionReports.length).toBe(1);
     expect($result.actionReports[0].action).toBe("Assert.equals");
     expect($result.actionReports[0].success).toBe(false);
-    expect($result.actionReports[0].shortSummary).toBe('varName is "800", expected "815"');
+    expect($result.actionReports[0].shortSummary).toBe('varName is "800" (number), expected "815" (number)');
     expect(typeof $result.actionReports[0].time).toBe("number");
   });
 
