@@ -135,12 +135,24 @@ async function executeOnce(overwriteDetails = {}) {
   axios.defaults.headers.common["x-rapidapi-location"] = overwriteDetails.locationKey;
   try {
     await fetchAndExecuteRequests(overwriteDetails);
+  } catch (e) {
+    if (e.response) {
+      // eslint-disable-next-line max-len
+      consola.error(
+        `fetchAndExecuteRequests error: ${e.response.status}, ${e.response.statusText}, ${e.response.data}`
+      );
+    } else {
+      consola.error(`fetchAndExecuteRequests error: ${e}`);
+    }
+  }
+  try {
     await fetchAndExecuteTests(overwriteDetails);
   } catch (e) {
     if (e.response) {
-      consola.error(`${e.response.status}, ${e.response.statusText}, ${e.response.data}`);
+      // eslint-disable-next-line max-len
+      consola.error(`fetchAndExecuteTests error: ${e.response.status}, ${e.response.statusText}, ${e.response.data}`);
     } else {
-      consola.error(e);
+      consola.error(`fetchAndExecuteTests error: ${e}`);
     }
   }
 }
