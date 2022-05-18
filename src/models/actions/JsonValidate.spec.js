@@ -2,7 +2,7 @@ const { JsonValidate } = require("./JsonValidate");
 const Context = require("../Context");
 
 describe("JsonValidate", () => {
-  it("should return successful result when JSON is valid agains supplied schema", async () => {
+  it("should return successful result when JSON is valid against supplied schema", async () => {
     let $action = new JsonValidate({
       expression: "foo",
       schema: JSON.stringify({
@@ -23,7 +23,7 @@ describe("JsonValidate", () => {
     expect(typeof $result.actionReports[0].time).toBe("number");
   });
 
-  it("should return failure result when JSON is not-valid agains supplied schema", async () => {
+  it("should return failure result when JSON is not-valid against supplied schema", async () => {
     let $action = new JsonValidate({
       expression: "foo",
       schema: JSON.stringify({
@@ -100,5 +100,30 @@ describe("JsonValidate", () => {
     expect($result.actionReports[0].success).toBe(false);
     expect($result.actionReports[0].shortSummary).toBe("Schema supplied is not valid json");
     expect(typeof $result.actionReports[0].time).toBe("number");
+  });
+
+  it.only("should fail result when the formatter validation fails", async () => {
+    let $action = new JsonValidate({
+      expression: "foo",
+      schema: JSON.stringify({
+        type: "object",
+        properties: {
+          address: {
+            type: "string",
+            format: "ipv4",
+          },
+        },
+      }),
+    });
+
+    let $context = new Context({ foo: { address: "1.1.1.900" } });
+
+    let $result = await $action.eval($context);
+    expect($result.actionReports.length).toBe(1);
+    expect($result.actionReports[0].action).toBe("Json.validate");
+    expect($result.actionReports[0].success).toBe(false);
+    expect($result.actionReports[0].shortSummary).toBe("JSON at foo failed validation");
+    const formatterError = JSON.parse($result.actionReports[0].longSummary).errors[0].message;
+    expect(formatterError).toBe('must match format "ipv4"');
   });
 });

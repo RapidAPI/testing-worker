@@ -1,7 +1,8 @@
 const { BaseAction } = require("./BaseAction");
 const { performance } = require("perf_hooks");
 var util = require("util");
-var Ajv = require("ajv");
+const Ajv = require("ajv");
+const addFormats = require("ajv-formats");
 
 class JsonValidate extends BaseAction {
   async eval(context) {
@@ -36,7 +37,10 @@ class JsonValidate extends BaseAction {
             action: "Json.validate",
             success: false,
             shortSummary: "Schema supplied is not valid json",
-            longSummary: null,
+            longSummary: JSON.stringify({
+              error: e.message,
+              schema: schema,
+            }),
             time: performance.now() - t0,
           },
         ],
@@ -45,10 +49,11 @@ class JsonValidate extends BaseAction {
 
     // perform validation
     let ajv = new Ajv({ allErrors: true });
-    let izValid = ajv.validate(schema, value);
+    addFormats(ajv);
+    let isValid = ajv.validate(schema, value);
 
     // return result
-    if (izValid) {
+    if (isValid) {
       return {
         actionReports: [
           {
