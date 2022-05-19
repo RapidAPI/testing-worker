@@ -45,7 +45,7 @@ class Http extends BaseAction {
     try {
       transport = context.get("__http_transport");
     } catch (e) {
-      if (global.settings.ignoreSSL === "false") {
+      if (global.settings?.ignoreSSL === "false" || !global.settings) {
         transport = axios.create({
           withCredentials: true,
         });
