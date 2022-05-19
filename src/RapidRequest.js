@@ -88,10 +88,14 @@ const processRequest = async (req) => {
 };
 
 const executeRequest = async (request) => {
-  const context = new Context({
-    ...(request.envVariables || {}),
-    ...(request.testVariables || {}),
-  });
+  const context = new Context(
+    {
+      ...(request.envVariables || {}),
+      ...(request.testVariables || {}),
+    },
+    request.envSecrets // used to mask sensitive context data in the report
+  );
+
   const transformedRequest = recursiveReplace(request.request, context.data);
 
   return await processRequest(transformedRequest);
