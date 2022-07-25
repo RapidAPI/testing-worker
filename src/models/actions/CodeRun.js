@@ -2,7 +2,23 @@ const { BaseAction } = require("./BaseAction");
 const { performance } = require("perf_hooks");
 const { NodeVM } = require("vm2");
 
-process.on("uncaughtException", () => {
+let resolve = null;
+let t0 = 0;
+
+process.on("uncaughtException", (e) => {
+  if (resolve) {
+    resolve({
+      actionReports: [
+        {
+          action: "Code.run",
+          success: false,
+          shortSummary: e.message || e,
+          longSummary: null,
+          time: performance.now() - t0,
+        },
+      ],
+    });
+  }
   // Do not delete!
   //
   // Used to catch asynchronous exceptions from inside of CodeRun that will otherwise
@@ -14,8 +30,9 @@ process.on("uncaughtException", () => {
 
 class CodeRun extends BaseAction {
   async eval(context) {
-    return new Promise((resolve) => {
-      const t0 = performance.now();
+    return new Promise((_resolve) => {
+      resolve = _resolve;
+      t0 = performance.now();
       const vm = new NodeVM({
         timeout: 60000,
         eval: false,
