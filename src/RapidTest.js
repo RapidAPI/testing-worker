@@ -91,12 +91,13 @@ async function executeTest(testExecution, locationDetails) {
       }, 3000);
     });
   }
+
   await reportTestResult();
 }
 
 async function fetchAndExecuteTests({ baseUrl, locationSecret, locationKey, locationContext, batchSize, logging }) {
   let testExecutions = [];
-  if (logging) consola.info(`Getting test executions from ${baseUrl}/api/location/executable?amount=${batchSize}`);
+
   const headers = {
     "x-location-secret": locationSecret,
   };
@@ -113,9 +114,12 @@ async function fetchAndExecuteTests({ baseUrl, locationSecret, locationKey, loca
   ).data;
   testExecutions = executionsResponse["testExecutions"];
 
-  if (logging) consola.info("Test executions:\n");
-  // eslint-disable-next-line
-  if (logging) consola.info(testExecutions);
+  if (logging) {
+    if (testExecutions.length > 0) {
+      consola.info(`Test executions for ${baseUrl}:\n`);
+      consola.info(testExecutions);
+    }
+  }
 
   await Promise.all(
     testExecutions.map((testExecution) => {
@@ -133,7 +137,11 @@ async function fetchAndExecuteTests({ baseUrl, locationSecret, locationKey, loca
     })
   );
 
-  if (logging) consola.success(`Executed ${testExecutions.length} test executions\n`);
+  if (logging) {
+    if (testExecutions.length > 0) {
+      consola.success(`Executed ${testExecutions.length} test executions\n`);
+    }
+  }
 }
 
 module.exports = {

@@ -24,7 +24,7 @@ async function execute(logLevel = "on") {
     .description("Start worker to execute RapidAPI tests and requests")
     .requiredOption(
       "-u, --url <baseUrl>",
-      "The base URL to fetch executions from (env variable: BASE_URL)",
+      "The base URL(s) to fetch executions from. For default workers this value may be a comma separated list. Custom workers can only connect to a single service",
       process.env.BASE_URL || process.env.URL || "https://rapidapi.com/testing"
     )
     .requiredOption(
@@ -75,7 +75,7 @@ async function execute(logLevel = "on") {
 
   if (cmd.logging === "cli") {
     consola.info(`Starting a the worker version: ${pjson.version} from the CLI with the following settings:\n`);
-    consola.info(`RapidAPI Testing base URL <url>: ${cmd.url}`);
+    consola.info(`RapidAPI Testing base URL(s) <url>: ${cmd.url}`);
     consola.info(`RapidAPI Testing location secret <secret>: ${cmd.secret.substr(0, 3)}********`);
     consola.info(`RapidAPI Testing location key <key>: ${cmd.key}`);
     consola.info(`RapidAPI Testing context (user or organization ID) <context>: ${cmd.context}`);
@@ -86,8 +86,18 @@ async function execute(logLevel = "on") {
   }
 
   // Store the settings in a global so they cab be read anywhere
+
+  // Create a list of Testing services URLs to pull and push to. This is required for
+  // multiple regions. This feature applies to default locations only. Custom workers
+  // can only report to a single URL.
+  const cleanUrl = cmd.url.replace(/ /g, "");
+  let urls = cleanUrl.split(",");
+  urls = urls.filter((url) => {
+    return url.length !== 0;
+  });
+
   global.settings = {
-    baseUrl: cmd.url,
+    baseUrl: urls,
     locationSecret: cmd.secret,
     locationKey: cmd.key,
     locationContext: cmd.context === "Default" ? undefined : cmd.context,
@@ -96,39 +106,50 @@ async function execute(logLevel = "on") {
     ignoreSSL: cmd.ignoreSsl,
   };
 
-  const START_TIMESTAMP = Date.now();
+  global.settings.baseUrl.forEach(async (url) => {
+    const START_TIMESTAMP = Date.now();
 
-  let cycle = 1;
-  // eslint-disable-next-line
-  if (logging) console.log(`Staring cycle ${cycle++}`);
-  try {
-    await executeOnce({ ...global.settings });
-  } catch (err) {
-    consola.error(err);
-  }
-  if (cmd.frequency) {
-    const testLoop = new Promise((resolve) => {
-      const interval = setInterval(async function () {
-        if (parseInt(cmd.max)) {
-          let currentTimestamp = Date.now();
-          if (currentTimestamp > parseInt(START_TIMESTAMP) + parseInt(cmd.max)) {
-            clearInterval(interval);
-            resolve();
+    let cycle = 1;
+
+    if (logging) {
+      // eslint-disable-next-line
+      console.log(`Staring cycle ${cycle++} for ${url}`);
+    }
+    try {
+      await executeOnce({
+        ...global.settings,
+        baseUrl: url,
+      });
+    } catch (err) {
+      consola.error(err);
+    }
+    if (cmd.frequency) {
+      const testLoop = new Promise((resolve) => {
+        const interval = setInterval(async function () {
+          if (parseInt(cmd.max)) {
+            let currentTimestamp = Date.now();
+            if (currentTimestamp > parseInt(START_TIMESTAMP) + parseInt(cmd.max)) {
+              clearInterval(interval);
+              resolve();
+            }
           }
-        }
-        if (logging) {
-          // eslint-disable-next-line
-          console.log(`Staring cycle ${cycle++}`);
-        }
-        try {
-          await executeOnce({ ...global.settings });
-        } catch (err) {
-          consola.error(err);
-        }
-      }, cmd.frequency);
-    });
-    await testLoop;
-  }
+          if (logging) {
+            // eslint-disable-next-line
+            console.log(`Staring cycle ${cycle++} for ${url}`);
+          }
+          try {
+            await executeOnce({
+              ...global.settings,
+              baseUrl: url,
+            });
+          } catch (err) {
+            consola.error(err);
+          }
+        }, cmd.frequency);
+      });
+      await testLoop;
+    }
+  });
 }
 
 async function executeOnce(overwriteDetails = {}) {

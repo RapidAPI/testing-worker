@@ -46,7 +46,7 @@ The amount of time in ms that the worker is going to be active. For example, set
 
 ##### `-u, --url <baseUrl>` (**Optional**)
 
-The base URL to fetch executions from (default: "https://rapidapi.com/testing")
+The base URL(s) to fetch executions from. For default workers this value may be a comma separated list. Custom workers can only connect to a single service"
 
 ##### `-b, --batch <batch>`(**Optional; default is 100**)
 
