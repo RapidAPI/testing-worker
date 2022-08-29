@@ -67,6 +67,7 @@ jobs:
           zip_file: worker.zip
           handler: dist/src/main.execute
           description: "aws:states:opt-out"
+          environment: "FOO=${{ secrets.TESTFOO1 }},"
           #
           # This is where we add addition default workers in other regions if needed
           #
