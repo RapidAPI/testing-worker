@@ -62,13 +62,14 @@ class TestExecutable {
 
     let _apiCalls = [];
     let _actionReports = [];
+    let timeoutId;
 
-    //TIMING
+    // TIMING
     const { performance } = require("perf_hooks");
     const t0 = performance.now();
 
     let timeoutTimer = new Promise((resolve) => {
-      setTimeout(() => {
+      timeoutId = setTimeout(() => {
         cancelled = true;
         resolve(TIMEOUT);
       }, timeoutSeconds * 1000);
@@ -116,6 +117,9 @@ class TestExecutable {
         // into a parent.
         totalContextWrites.push(...result.contextWrites);
       }
+      // Clear the timeout or else the lambda will hang around until it finishes which is not
+      // ideal for default workers without a frequency value.
+      clearTimeout(timeoutId);
       return FINISHED_EXECUTION;
     })();
     let result = await Promise.race([timeoutTimer, testExecution]);
