@@ -32,7 +32,7 @@ jobs:
           registry: https://registry.npmjs.org/
       - uses: JS-DevTools/npm-publish@v1
         with:
-          token: ${{ secrets.NPM_TOKEN_GITHUB }}
+          token: ${{ secrets.ACTIONS_ACCESS_KEY }}
           registry: https://npm.pkg.github.com
 
   make-release:
@@ -77,7 +77,7 @@ jobs:
       - name: Install node packages
         run: cd ../dist && yarn install --frozen-lockfile
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN_GITHUB}}
+          NODE_AUTH_TOKEN: ${{secrets.ACTIONS_ACCESS_KEY}}
       # Kind of a hack to avoid recursively copying the dist folder
       - name: Move dist folder down
         run: mv ../dist dist
