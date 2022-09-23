@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-const axios = require("axios");
-
 const { fetchAndExecuteRequests } = require("./RapidRequest");
 const { fetchAndExecuteTests } = require("./RapidTest");
 const models = require("./models");
@@ -132,29 +130,15 @@ async function execute(logLevel = "on") {
 }
 
 async function executeOnce(overwriteDetails = {}) {
-  axios.defaults.headers.common["x-rapidapi-location"] = overwriteDetails.locationKey;
-  try {
-    await fetchAndExecuteRequests(overwriteDetails);
-  } catch (e) {
-    if (e.response) {
-      // eslint-disable-next-line max-len
-      consola.error(
-        `fetchAndExecuteRequests error: ${e.response.status}, ${e.response.statusText}, ${e.response.data}`
-      );
-    } else {
-      consola.error(`fetchAndExecuteRequests error: ${e}`);
+  Promise.all([fetchAndExecuteTests(overwriteDetails), fetchAndExecuteRequests(overwriteDetails)]).catch((e) => {
+    if (global.settings.logging) {
+      if (e.response) {
+        consola.error(`fetchAndExecute error: ${e.response.status}, ${e.response.statusText}, ${e.response.data}`);
+      } else {
+        consola.error(`fetchAndExecute error: ${e}`);
+      }
     }
-  }
-  try {
-    await fetchAndExecuteTests(overwriteDetails);
-  } catch (e) {
-    if (e.response) {
-      // eslint-disable-next-line max-len
-      consola.error(`fetchAndExecuteTests error: ${e.response.status}, ${e.response.statusText}, ${e.response.data}`);
-    } else {
-      consola.error(`fetchAndExecuteTests error: ${e}`);
-    }
-  }
+  });
 }
 
 module.exports = {
