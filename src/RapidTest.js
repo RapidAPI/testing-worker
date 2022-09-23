@@ -115,22 +115,20 @@ async function fetchAndExecuteTests({ baseUrl, locationSecret, locationKey, loca
   if (logging) {
     if (testExecutions.length > 0) {
       consola.info(`Processing executions for ${baseUrl}:\n`);
-      // Just log the execution, not the whole object as it contains raw passwords
-      consola.info(testExecutions.map(execution => (execution.testExecution)));
+      // Just log the execution and not the whole object as it contains raw passwords
+      consola.info(testExecutions.map((execution) => execution.testExecution));
     }
   }
 
   await Promise.all(
     testExecutions.map((testExecution) => {
       if (!testExecution) {
-        // eslint-disable-next-line
-        console.error("testExecution is null");
+        consola.error("testExecution is null");
       } else {
         try {
           return executeTest(testExecution, { baseUrl, locationSecret, locationKey, locationContext, batchSize });
         } catch (e) {
-          // eslint-disable-next-line
-          console.error(e);
+          consola.error(e);
         }
       }
     })
@@ -141,7 +139,6 @@ async function fetchAndExecuteTests({ baseUrl, locationSecret, locationKey, loca
       consola.success(`Executed ${testExecutions.length} test executions\n`);
     }
   }
-
 }
 
 module.exports = {

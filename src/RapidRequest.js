@@ -111,10 +111,12 @@ const fetchAndExecuteRequests = async (locationDetails) => {
   if (locationDetails.logging) {
     if (requests.length > 0) {
       consola.info(`Processing requests for ${locationDetails.baseUrl}:\n`);
-      consola.info(requests.map(request => ({
-        ...request.request,
-        headers: "****" // don't log headers as they often has raw passwords
-      })));
+      consola.info(
+        requests.map((request) => ({
+          ...request.request,
+          headers: "****", // don't log headers as they often has raw passwords
+        }))
+      );
     }
   }
   await Promise.all(
@@ -122,8 +124,7 @@ const fetchAndExecuteRequests = async (locationDetails) => {
       try {
         return executeAndSendRequest(request, locationDetails);
       } catch (e) {
-        // eslint-disable-next-line
-        console.error(e);
+        consola.error(e);
       }
     })
   );
