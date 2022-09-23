@@ -5,9 +5,9 @@ const { Http } = require("./models/actions/Http");
 const consola = require("consola");
 const { pick } = require("./utils");
 
-const fetchRequests = async ({ baseUrl, locationSecret, locationKey, locationContext, batchSize, logging }) => {
+const fetchRequests = async ({ baseUrl, locationSecret, locationKey, locationContext, batchSize }) => {
   let requests = [];
-  if (logging) consola.info(`Getting requests from ${baseUrl}/api/location/request?amount=${batchSize}`);
+
   const headers = {
     "x-location-secret": locationSecret,
   };
@@ -109,8 +109,13 @@ const executeAndSendRequest = async (request, locationDetails) => {
 const fetchAndExecuteRequests = async (locationDetails) => {
   const requests = await fetchRequests(locationDetails);
   if (locationDetails.logging) {
-    // eslint-disable-next-line
-    console.log(requests);
+    if (requests.length > 0) {
+      consola.info(`Processing requests for ${locationDetails.baseUrl}:\n`);
+      consola.info(requests.map(request => ({
+        ...request.request,
+        headers: "****" // don't log headers as they often has raw passwords
+      })));
+    }
   }
   await Promise.all(
     requests.map((request) => {
@@ -122,7 +127,11 @@ const fetchAndExecuteRequests = async (locationDetails) => {
       }
     })
   );
-  if (locationDetails.logging) consola.success(`Executed ${requests.length} requests\n`);
+  if (locationDetails.logging) {
+    if (requests.length > 0) {
+      consola.success(`Executed ${requests.length} requests\n`);
+    }
+  }
 };
 
 module.exports = {
