@@ -96,7 +96,6 @@ async function executeTest(testExecution, locationDetails) {
 
 async function fetchAndExecuteTests({ baseUrl, locationSecret, locationKey, locationContext, batchSize, logging }) {
   let testExecutions = [];
-  if (logging) consola.info(`Getting test executions from ${baseUrl}/api/location/executable?amount=${batchSize}`);
   const headers = {
     "x-location-secret": locationSecret,
   };
@@ -113,9 +112,13 @@ async function fetchAndExecuteTests({ baseUrl, locationSecret, locationKey, loca
   ).data;
   testExecutions = executionsResponse["testExecutions"];
 
-  if (logging) consola.info("Test executions:\n");
-  // eslint-disable-next-line
-  if (logging) consola.info(testExecutions);
+  if (logging) {
+    if (testExecutions.length > 0) {
+      consola.info(`Processing executions for ${baseUrl}:\n`);
+      // Just log the execution, not the whole object as it contains raw passwords
+      consola.info(testExecutions.map(execution => (execution.testExecution)));
+    }
+  }
 
   await Promise.all(
     testExecutions.map((testExecution) => {
@@ -133,7 +136,12 @@ async function fetchAndExecuteTests({ baseUrl, locationSecret, locationKey, loca
     })
   );
 
-  if (logging) consola.success(`Executed ${testExecutions.length} test executions\n`);
+  if (logging) {
+    if (testExecutions.length > 0) {
+      consola.success(`Executed ${testExecutions.length} test executions\n`);
+    }
+  }
+
 }
 
 module.exports = {
