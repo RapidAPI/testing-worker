@@ -49,7 +49,7 @@ async function execute(logLevel = "on") {
     )
     .option(
       "-m, --max <max>",
-      "The max amount of ms to run intervals. If this is undefined, the worker will continue to run until the process is terminated. (default: undefined)",
+      "The max amount of milliseconds to run intervals. If this is undefined, the worker will continue to run until the process is terminated. (default: undefined)",
       process.env.POLLING_TIME_MAX
     )
     .option(
@@ -80,7 +80,7 @@ async function execute(logLevel = "on") {
     consola.info(`RapidAPI Testing location key <key>: ${cmd.key}`);
     consola.info(`RapidAPI Testing context (user or organization ID) <context>: ${cmd.context}`);
     consola.info(`Frequency the worker will poll for new test/requests to be executed <frequency>: ${cmd.frequency}`);
-    consola.info(`Maximum time this worker will keep polling for tests/requests <max>: ${cmd.max}`);
+    consola.info(`Maximum time in milliseconds this worker will keep polling for tests/requests <max>: ${cmd.max}`);
     consola.info(`Number of requests/tests to dequeue on each interval <max>: ${cmd.batch}`);
     consola.info(`Ignore missing SSL certificates for https requests: ${cmd.ignoreSsl}\n`);
   }
