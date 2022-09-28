@@ -67,6 +67,12 @@ jobs:
           zip_file: worker.zip
           handler: dist/src/main.execute
           description: "aws:states:opt-out"
+          environment: >
+            BASE_URL=https://rapidapi.xyz/testing,
+            LOCATION_CONTEXT=Default,
+            LOCATION_KEY=AWS-STAGING,
+            LOCATION_SECRET=${{ secrets.LOCATION_SECRET_STAGING_DEFAULT }},
+            WORKER_LOGGING=cli
           #
           # This is where we add addition default workers in other regions if needed
           #
@@ -100,3 +106,11 @@ jobs:
           zip_file: worker.zip
           handler: dist/src/main.execute
           description: "aws:states:opt-out"
+          environment: >
+            BASE_URL=https://rapidapi.xyz/testing,
+            LOCATION_CONTEXT=3799087,
+            LOCATION_KEY=custom-staging-worker,
+            LOCATION_SECRET=${{ secrets.LOCATION_SECRET_STAGING_CUSTOM }},
+            POLLING_TIME_MAX=70000,
+            FREQUENCY=2000,
+            WORKER_LOGGING=cli
