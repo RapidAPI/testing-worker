@@ -1,0 +1,40 @@
+name: "Upload zip to lambda"
+
+inputs:
+  worker_env:
+    description: "key=value, ... comma separated pairs of ENV vars"
+    required: true
+  aws_region:
+    description: "The region to deploy the lambda too"
+    required: true
+  function_name: 
+    description: "Lambda function name"
+    required: true
+  aws_access_key_id:
+    description: "The AWS access ID for the provided region"
+    required: true
+  aws_secret_access_key:
+    description: "The AWS access secret for the provided region"
+    required: true
+  ACTIONS_ACCESS_KEY:
+    description: "secrets.ACTIONS_ACCESS_KEY"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download the zipped worker
+      uses: actions/download-artifact@v2
+      with:
+        name: zipped_worker
+    - name: Deploy worker to ${{ inputs.function_name }} in ${{ inputs.region }}
+      uses: appleboy/lambda-action@v0.1.5
+      with:
+        aws_access_key_id: ${{ inputs.aws_access_key_id }}
+        aws_secret_access_key: ${{ inputs.aws_secret_access_key }}
+        aws_region: ${{ inputs.aws_region }}
+        function_name: ${{ inputs.function_name }}
+        zip_file: worker.zip
+        handler: dist/src/main.execute
+        description: "aws:states:opt-out"
+        environment: ${{ inputs.worker_env }}

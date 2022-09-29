@@ -1,0 +1,31 @@
+name: "Build zip"
+
+inputs:
+  ACTIONS_ACCESS_KEY:
+    description: "secrets.ACTIONS_ACCESS_KEY"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Prepare worker_dist directory
+      shell: "bash"
+      run: |
+        cp -R ./ ../dist
+    - name: Install node packages
+      shell: "bash"
+      run: cd ../dist && yarn install --frozen-lockfile
+      env:
+        NODE_AUTH_TOKEN: ${{inputs.ACTIONS_ACCESS_KEY}}
+    # Kind of a hack to avoid recursively copying the dist folder
+    - name: Move dist folder down
+      shell: "bash"
+      run: mv ../dist dist
+    - name: Zip dist
+      shell: "bash"
+      run: zip -rq worker.zip dist/*
+    - name: Upload the zipped worker
+      uses: actions/upload-artifact@v2
+      with:
+        name: zipped_worker
+        path: worker.zip
