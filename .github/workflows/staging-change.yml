@@ -1,4 +1,4 @@
-name: Release and publishing version specific packages
+name: Upload zip to lambdas in staging
 
 on:
   push:
