@@ -29,26 +29,42 @@ jobs:
     strategy:
       matrix:
         region: [
-          us-east-1, 
-          us-west-2,
-          ap-east-1,
-          ap-south-1, 
-          ap-southeast-1, 
-          ap-northeast-1, 
-          eu-central-1, 
-          eu-west-3, 
-          sa-east-1
-        ]
-        location_key: [
-          AWS-US-EAST-1,
-          AWS-US-WEST-2,
-          AWS-AP-EAST-1,
-          AWS-AP-SOUTH-1,
-          AWS-AP-SOUTHEAST-1,
-          AWS-AP-NORTHEAST-1,
-          AWS-EU-CENTRAL-1,
-          AWS-EU-WEST-3,
-          AWS-SA-EAST-1
+          {
+            name: us-east-1,
+            key: AWS-US-EAST-1
+          },
+          {
+            name: us-west-2,
+            key: AWS-US-WEST-2
+          },
+          {
+            name: ap-east-1,
+            key: AWS-AP-EAST-1
+          },
+          {
+            name: ap-south-1, 
+            key: AWS-AP-SOUTH-1
+          },
+          {
+            name: ap-southeast-1,  
+            key: AWS-AP-SOUTHEAST-1
+          },
+          {
+            name: ap-northeast-1, 
+            key: AWS-AP-NORTHEAST-1
+          },
+          {
+            name: eu-central-1,  
+            key: AWS-EU-CENTRAL-1
+          },
+          {
+            name: eu-west-3, 
+            key: AWS-EU-WEST-3
+          },
+          {
+            name: sa-east-1,
+            key: AWS-SA-EAST-1
+          }
         ]
     steps:
       - uses: actions/checkout@v2
@@ -58,12 +74,12 @@ jobs:
           worker_env: >
             BASE_URL=https://rapidapi.com/testing,
             LOCATION_CONTEXT=Default,
-            LOCATION_KEY=${{ matrix.location_key }},
+            LOCATION_KEY=${{ matrix.region.key }},
             LOCATION_SECRET=${{ secrets.LOCATION_SECRET_PROD_DEFAULT }},
             WORKER_LOGGING=off
           aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
-          aws_region: ${{ matrix.region }}
+          aws_region: ${{ matrix.region.name }}
           function_name: rapidapi-prod-testing-worker
 
   npm-publish-package:
