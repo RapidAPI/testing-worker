@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-const axios = require("axios");
-
 const { fetchAndExecuteRequests } = require("./RapidRequest");
 const { fetchAndExecuteTests } = require("./RapidTest");
 const models = require("./models");
@@ -49,7 +47,7 @@ async function execute(logLevel = "on") {
     )
     .option(
       "-m, --max <max>",
-      "The max amount of ms to run intervals. If this is undefined, the worker will continue to run until the process is terminated. (default: undefined)",
+      "The max amount of milliseconds to run intervals. If this is undefined, the worker will continue to run until the process is terminated. (default: undefined)",
       process.env.POLLING_TIME_MAX
     )
     .option(
@@ -80,7 +78,7 @@ async function execute(logLevel = "on") {
     consola.info(`RapidAPI Testing location key <key>: ${cmd.key}`);
     consola.info(`RapidAPI Testing context (user or organization ID) <context>: ${cmd.context}`);
     consola.info(`Frequency the worker will poll for new test/requests to be executed <frequency>: ${cmd.frequency}`);
-    consola.info(`Maximum time this worker will keep polling for tests/requests <max>: ${cmd.max}`);
+    consola.info(`Maximum time in milliseconds this worker will keep polling for tests/requests <max>: ${cmd.max}`);
     consola.info(`Number of requests/tests to dequeue on each interval <max>: ${cmd.batch}`);
     consola.info(`Ignore missing SSL certificates for https requests: ${cmd.ignoreSsl}\n`);
   }
@@ -132,29 +130,15 @@ async function execute(logLevel = "on") {
 }
 
 async function executeOnce(overwriteDetails = {}) {
-  axios.defaults.headers.common["x-rapidapi-location"] = overwriteDetails.locationKey;
-  try {
-    await fetchAndExecuteRequests(overwriteDetails);
-  } catch (e) {
-    if (e.response) {
-      // eslint-disable-next-line max-len
-      consola.error(
-        `fetchAndExecuteRequests error: ${e.response.status}, ${e.response.statusText}, ${e.response.data}`
-      );
-    } else {
-      consola.error(`fetchAndExecuteRequests error: ${e}`);
+  return Promise.all([fetchAndExecuteTests(overwriteDetails), fetchAndExecuteRequests(overwriteDetails)]).catch((e) => {
+    if (global.settings.logging) {
+      if (e.response) {
+        consola.error(`fetchAndExecute error: ${e.response.status}, ${e.response.statusText}, ${e.response.data}`);
+      } else {
+        consola.error(`fetchAndExecute error: ${e}`);
+      }
     }
-  }
-  try {
-    await fetchAndExecuteTests(overwriteDetails);
-  } catch (e) {
-    if (e.response) {
-      // eslint-disable-next-line max-len
-      consola.error(`fetchAndExecuteTests error: ${e.response.status}, ${e.response.statusText}, ${e.response.data}`);
-    } else {
-      consola.error(`fetchAndExecuteTests error: ${e}`);
-    }
-  }
+  });
 }
 
 module.exports = {

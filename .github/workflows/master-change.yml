@@ -1,4 +1,4 @@
-name: Release and publishing version specific packages
+name: Release package and upload zip to lambdas in production
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
 
 jobs:
   node-run-tests:
+    name: Run tests and create zip artifact
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -17,8 +18,56 @@ jobs:
       - run: yarn jest
       - run: yarn check-format
       - run: yarn lint
+      # Build lambda zip
+      - uses: ./.github/actions/build-zip
+        with: 
+          ACTIONS_ACCESS_KEY: ${{ secrets.ACTIONS_ACCESS_KEY }}
+  
+  lambda-upload-zip-to-aws:
+    needs: [node-run-tests]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        region: [
+          us-east-1, 
+          us-west-2,
+          ap-east-1,
+          ap-south-1, 
+          ap-southeast-1, 
+          ap-northeast-1, 
+          eu-central-1, 
+          eu-west-3, 
+          sa-east-1
+        ]
+        location_key: [
+          AWS-US-EAST-1,
+          AWS-US-WEST-2,
+          AWS-AP-EAST-1,
+          AWS-AP-SOUTH-1,
+          AWS-AP-SOUTHEAST-1,
+          AWS-AP-NORTHEAST-1,
+          AWS-EU-CENTRAL-1,
+          AWS-EU-WEST-3,
+          AWS-SA-EAST-1
+        ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/upload-lambda
+        with: 
+          ACTIONS_ACCESS_KEY: ${{ secrets.ACTIONS_ACCESS_KEY }}
+          worker_env: >
+            BASE_URL=https://rapidapi.com/testing,
+            LOCATION_CONTEXT=Default,
+            LOCATION_KEY=${{ matrix.location_key }},
+            LOCATION_SECRET=${{ secrets.LOCATION_SECRET_PROD_DEFAULT }},
+            WORKER_LOGGING=off
+          aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
+          aws_region: ${{ matrix.region }}
+          function_name: rapidapi-prod-testing-worker
 
   npm-publish-package:
+    if: "contains(github.event.head_commit.message, 'ci-publish-package')"
     needs: [node-run-tests]
     runs-on: ubuntu-latest
     steps:
@@ -36,6 +85,7 @@ jobs:
           registry: https://npm.pkg.github.com
 
   make-release:
+    if: "contains(github.event.head_commit.message, 'ci-publish-package')"
     needs: [npm-publish-package]
     runs-on: ubuntu-latest
     steps:
@@ -58,38 +108,8 @@ jobs:
           draft: false
           prerelease: false
 
-  lambda-build-worker-zip:
-    needs: [node-run-tests]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js
-        uses: actions/setup-node@v2
-        with:
-          always-auth: true
-          node-version: v14.15.4
-          registry-url: https://registry.npmjs.org
-          scope: "@rapidapi"
-
-      - name: Prepare worker_dist directory
-        run: |
-          cp -R ./ ../dist
-      - name: Install node packages
-        run: cd ../dist && yarn install --frozen-lockfile
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.ACTIONS_ACCESS_KEY}}
-      # Kind of a hack to avoid recursively copying the dist folder
-      - name: Move dist folder down
-        run: mv ../dist dist
-      - name: Zip dist
-        run: zip -rq worker.zip dist/*
-      - name: Upload the zipped worker
-        uses: actions/upload-artifact@v2
-        with:
-          name: zipped_worker
-          path: worker.zip
-
   docker-build-push-worker:
+    if: "contains(github.event.head_commit.message, 'ci-publish-package')"
     needs: [node-run-tests]
     runs-on: ubuntu-latest
     steps:
@@ -107,102 +127,4 @@ jobs:
           file: ./docker/Dockerfile.worker
           push: true
           tags: rapidapicloud/testing-worker:latest
-
-  lambda-upload-zip-to-aws:
-    runs-on: ubuntu-latest
-    needs: [lambda-build-worker-zip]
-    steps:
-      - name: Download the zipped worker
-        uses: actions/download-artifact@v2
-        with:
-          name: zipped_worker
-      - name: Deploy worker to production us-east-1
-        uses: appleboy/lambda-action@v0.1.5
-        with:
-          aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
-          aws_region: us-east-1
-          function_name: rapidapi-prod-testing-worker
-          zip_file: worker.zip
-          handler: dist/src/main.execute
-          description: "aws:states:opt-out"
-      - name: Deploy worker to production us-west-2
-        uses: appleboy/lambda-action@v0.1.5
-        with:
-          aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
-          aws_region: us-west-2
-          function_name: rapidapi-prod-testing-worker
-          zip_file: worker.zip
-          handler: dist/src/main.execute
-          description: "aws:states:opt-out"
-      - name: Deploy worker to production ap-east-1
-        uses: appleboy/lambda-action@v0.1.5
-        with:
-          aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
-          aws_region: ap-east-1
-          function_name: rapidapi-prod-testing-worker
-          zip_file: worker.zip
-          handler: dist/src/main.execute
-          description: "aws:states:opt-out"
-      - name: Deploy worker to production ap-south-1
-        uses: appleboy/lambda-action@v0.1.5
-        with:
-          aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
-          aws_region: ap-south-1
-          function_name: rapidapi-prod-testing-worker
-          zip_file: worker.zip
-          handler: dist/src/main.execute
-          description: "aws:states:opt-out"
-      - name: Deploy worker to production ap-southeast-1
-        uses: appleboy/lambda-action@v0.1.5
-        with:
-          aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
-          aws_region: ap-southeast-1
-          function_name: rapidapi-prod-testing-worker
-          zip_file: worker.zip
-          handler: dist/src/main.execute
-          description: "aws:states:opt-out"
-      - name: Deploy worker to production ap-northeast-1
-        uses: appleboy/lambda-action@v0.1.5
-        with:
-          aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
-          aws_region: ap-northeast-1
-          function_name: rapidapi-prod-testing-worker
-          zip_file: worker.zip
-          handler: dist/src/main.execute
-          description: "aws:states:opt-out"
-      - name: Deploy worker to production eu-central-1
-        uses: appleboy/lambda-action@v0.1.5
-        with:
-          aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
-          aws_region: eu-central-1
-          function_name: rapidapi-prod-testing-worker
-          zip_file: worker.zip
-          handler: dist/src/main.execute
-          description: "aws:states:opt-out"
-      - name: Deploy worker to production eu-west-3
-        uses: appleboy/lambda-action@v0.1.5
-        with:
-          aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
-          aws_region: eu-west-3
-          function_name: rapidapi-prod-testing-worker
-          zip_file: worker.zip
-          handler: dist/src/main.execute
-          description: "aws:states:opt-out"
-      - name: Deploy worker to production sa-east-1
-        uses: appleboy/lambda-action@v0.1.5
-        with:
-          aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
-          aws_region: sa-east-1
-          function_name: rapidapi-prod-testing-worker
-          zip_file: worker.zip
-          handler: dist/src/main.execute
-          description: "aws:states:opt-out"
+  
