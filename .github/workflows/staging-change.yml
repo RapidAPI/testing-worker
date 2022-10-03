@@ -31,7 +31,9 @@ jobs:
             LOCATION_CONTEXT=Default,
             LOCATION_KEY=AWS-STAGING,
             LOCATION_SECRET=${{ secrets.LOCATION_SECRET_STAGING_DEFAULT }},
-            WORKER_LOGGING=cli
+            WORKER_LOGGING=cli,
+            POLLING_TIME_MAX=5000,
+            FREQUENCY=1000
           aws_access_key_id: ${{ secrets.AWS_STAGING_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_STAGING_SECRET_ACCESS_KEY }}
           aws_region: us-east-1

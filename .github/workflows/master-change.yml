@@ -76,7 +76,9 @@ jobs:
             LOCATION_CONTEXT=Default,
             LOCATION_KEY=${{ matrix.region.key }},
             LOCATION_SECRET=${{ secrets.LOCATION_SECRET_PROD_DEFAULT }},
-            WORKER_LOGGING=off
+            WORKER_LOGGING=off,
+            POLLING_TIME_MAX=5000,
+            FREQUENCY=1000
           aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}
           aws_region: ${{ matrix.region.name }}
