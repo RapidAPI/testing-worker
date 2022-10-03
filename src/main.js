@@ -106,14 +106,16 @@ async function execute(event, _context) {
   const START_TIMESTAMP = Date.now();
 
   let cycle = 1;
-  // eslint-disable-next-line
-  if (logging) console.log(`Staring cycle ${cycle++}`);
-  try {
-    await executeOnce({ ...global.settings });
-  } catch (err) {
-    consola.error(err);
-  }
-  if (cmd.frequency) {
+  if (!cmd.frequency) {
+    if (logging) consola.log(`Staring cycle ${cycle}`);
+    try {
+      await executeOnce({ ...global.settings });
+    } catch (err) {
+      consola.error(err);
+    }
+  } else {
+    let unresolvedCycles = 0;
+    let maxTimeReached = false;
     const testLoop = new Promise((resolve) => {
       const interval = setInterval(async function () {
         if (parseInt(cmd.max)) {
@@ -121,7 +123,11 @@ async function execute(event, _context) {
           if (currentTimestamp > parseInt(START_TIMESTAMP) + parseInt(cmd.max)) {
             if (logging) consola.log(`Max polling time reached`);
             clearInterval(interval);
-            resolve();
+            maxTimeReached = true;
+            if (unresolvedCycles <= 0) {
+              resolve();
+            }
+            return;
           }
         }
         if (logging) {
@@ -129,17 +135,27 @@ async function execute(event, _context) {
           console.log(`Staring cycle ${cycle++}`);
         }
         try {
+          unresolvedCycles += 1;
           await executeOnce({ ...global.settings });
         } catch (err) {
           consola.error(err);
+        } finally {
+          unresolvedCycles -= 1;
+          if (maxTimeReached && unresolvedCycles <= 0) {
+            resolve();
+          }
         }
       }, cmd.frequency);
     });
     await testLoop;
+    if (logging) {
+      consola.log(`End execute()`);
+    }
   }
 }
 
 async function executeOnce(overwriteDetails = {}) {
+  // eslint-disable-next-line max-len
   return Promise.all([fetchAndExecuteTests(overwriteDetails), fetchAndExecuteRequests(overwriteDetails)]).catch((e) => {
     if (global.settings.logging) {
       if (e.response) {

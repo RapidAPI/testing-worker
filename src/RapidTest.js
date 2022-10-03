@@ -119,14 +119,22 @@ async function fetchAndExecuteTests({ baseUrl, locationSecret, locationKey, loca
     headers["x-location-context"] = locationContext;
   }
 
+  if (logging) {
+    consola.info(`Getting executions....`);
+  }
+
   let executionsResponse = (
     await axios.get(`${baseUrl}/api/location/executable?amount=${batchSize}`, {
       headers,
-      timeout: 10000,
+      timeout: 5000,
     })
   ).data;
 
   testExecutions = executionsResponse["testExecutions"];
+
+  if (logging) {
+    consola.info(`Fetched ${testExecutions.length} executions`);
+  }
 
   if (logging) {
     if (testExecutions.length > 0) {

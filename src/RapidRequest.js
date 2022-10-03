@@ -19,7 +19,7 @@ const fetchRequests = async ({ baseUrl, locationSecret, locationKey, locationCon
   let requestsResponse = (
     await axios.get(`${baseUrl}/api/location/request?amount=${batchSize}`, {
       headers,
-      timeout: 10000,
+      timeout: 5000,
     })
   ).data;
   requests = requestsResponse["requests"];
