@@ -12,18 +12,27 @@ const { program } = require("commander");
 const pjson = require("../package.json");
 
 if (require.main === module) {
-  execute("cli");
+  // local execution
+  execute({ Records: [{ body: null }] }, {});
 }
 
-async function execute(logLevel = "on") {
+// eslint-disable-next-line no-unused-vars
+async function execute(event, _context) {
+  let baseURlFromEvent;
+  const body = event.Records?.[0]?.body;
+  if (body) {
+    baseURlFromEvent = JSON.parse(body)?.baseUrl;
+  }
   const ignoreSSL = "false"; // Fail any "https" tests with missing cert.
+
   program.version(pjson.version);
   program
     .description("Start worker to execute RapidAPI tests and requests")
     .requiredOption(
       "-u, --url <baseUrl>",
       "The base URL to fetch executions from (env variable: BASE_URL)",
-      process.env.BASE_URL || process.env.URL || "https://rapidapi.com/testing"
+      // default workers get baseUrl from SQS event body, otherwise from config
+      baseURlFromEvent || process.env.BASE_URL || "https://rapidapi.com/testing"
     )
     .requiredOption(
       "-s, --secret <secret>",
@@ -58,7 +67,7 @@ async function execute(logLevel = "on") {
     .option(
       "-l, --logging [on, off, cli]",
       "Logging level. 'cli' prints additional information at startup useful for debugging",
-      process.env.WORKER_LOGGING || logLevel
+      process.env.WORKER_LOGGING || "off"
     )
     .option(
       "--ignore-ssl [true, false]",
@@ -110,6 +119,7 @@ async function execute(logLevel = "on") {
         if (parseInt(cmd.max)) {
           let currentTimestamp = Date.now();
           if (currentTimestamp > parseInt(START_TIMESTAMP) + parseInt(cmd.max)) {
+            if (logging) consola.log(`Max polling time reached`);
             clearInterval(interval);
             resolve();
           }
