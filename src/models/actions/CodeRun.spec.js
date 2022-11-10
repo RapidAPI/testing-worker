@@ -121,7 +121,7 @@ describe("CodeRun", () => {
       let $context = new Context({});
       let $result = await $action.eval($context);
       expect($result.actionReports[0].success).toBe(false);
-      expect($result.actionReports[0].shortSummary).toBe(`Access denied to require 'fs'`);
+      expect($result.actionReports[0].shortSummary).toBe(`Cannot find module 'fs'`);
     });
 
     it("should fail when assert is thrown", async () => {
