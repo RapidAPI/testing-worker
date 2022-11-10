@@ -49,6 +49,7 @@
             "always"
         ]
     },
+    "ignorePatterns": ["built/**"],
     "overrides": [
         {
           "files": ["*.spec.js"],
