@@ -31,39 +31,48 @@ jobs:
         region: [
           {
             name: us-east-1,
-            key: AWS-US-EAST-1
+            key: AWS-US-EAST-1,
+            logging: 'off'
           },
           {
             name: us-west-2,
-            key: AWS-US-WEST-2
+            key: AWS-US-WEST-2,
+            logging: 'off'
           },
           {
             name: ap-east-1,
-            key: AWS-AP-EAST-1
+            key: AWS-AP-EAST-1,
+            logging: 'off'
           },
           {
             name: ap-south-1, 
-            key: AWS-AP-SOUTH-1
+            key: AWS-AP-SOUTH-1,
+            logging: 'off'
           },
           {
             name: ap-southeast-1,  
-            key: AWS-AP-SOUTHEAST-1
+            key: AWS-AP-SOUTHEAST-1,
+            logging: 'on'
           },
           {
             name: ap-northeast-1, 
-            key: AWS-AP-NORTHEAST-1
+            key: AWS-AP-NORTHEAST-1,
+            logging: 'off'
           },
           {
             name: eu-central-1,  
-            key: AWS-EU-CENTRAL-1
+            key: AWS-EU-CENTRAL-1,
+            logging: 'off'
           },
           {
             name: eu-west-3, 
-            key: AWS-EU-WEST-3
+            key: AWS-EU-WEST-3,
+            logging: 'off'
           },
           {
             name: sa-east-1,
             key: AWS-SA-EAST-1
+            logging: 'off'
           }
         ]
     steps:
@@ -76,7 +85,7 @@ jobs:
             LOCATION_CONTEXT=Default,
             LOCATION_KEY=${{ matrix.region.key }},
             LOCATION_SECRET=${{ secrets.LOCATION_SECRET_PROD_DEFAULT }},
-            WORKER_LOGGING=off,
+            WORKER_LOGGING=${{ matrix.region.logging }},
             POLLING_TIME_MAX=5000,
             FREQUENCY=1000
           aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
