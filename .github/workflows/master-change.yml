@@ -71,7 +71,7 @@ jobs:
           },
           {
             name: sa-east-1,
-            key: AWS-SA-EAST-1
+            key: AWS-SA-EAST-1,
             logging: 'off'
           }
         ]
