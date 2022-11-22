@@ -87,6 +87,7 @@ jobs:
             LOCATION_SECRET=${{ secrets.LOCATION_SECRET_PROD_DEFAULT }},
             WORKER_LOGGING=${{ matrix.region.logging }},
             POLLING_TIME_MAX=5000,
+            FORWARD_IP={{secrets.FORWARD_IP}},
             FREQUENCY=1000
           aws_access_key_id: ${{ secrets.AWS_PROD_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_PROD_SECRET_ACCESS_KEY }}

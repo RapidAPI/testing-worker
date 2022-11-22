@@ -9,8 +9,13 @@ const fetchRequests = async ({ baseUrl, locationSecret, locationKey, locationCon
   let requests = [];
 
   const headers = {
-    "x-location-secret": locationSecret,
+    "x-location-secret": locationSecret
   };
+
+  if (process.env.FORWARD_IP) {
+    headers["x-forwarded-for"] = process.env.FORWARD_IP;
+  }
+
   headers["x-location-key"] = locationKey;
 
   if (locationContext) {
@@ -42,6 +47,9 @@ const sendRequestResult = async (
   headers["x-location-key"] = locationKey;
   if (locationContext) {
     headers["x-location-context"] = locationContext;
+  }
+  if (process.env.FORWARD_IP) {
+    headers["x-forwarded-for"] = process.env.FORWARD_IP;
   }
   try {
     await axios.post(
