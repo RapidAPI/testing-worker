@@ -55,6 +55,9 @@ async function executeTest(testExecution, locationDetails) {
   if (locationDetails.locationContext) {
     headers["x-location-context"] = locationDetails.locationContext;
   }
+  if (process.env.FORWARD_IP) {
+    headers["x-forwarded-for"] = process.env.FORWARD_IP;
+  }
 
   function sendToService(result, execution, headers) {
     return axios.post(
@@ -117,6 +120,10 @@ async function fetchAndExecuteTests({ baseUrl, locationSecret, locationKey, loca
   }
   if (locationContext) {
     headers["x-location-context"] = locationContext;
+  }
+
+  if (process.env.FORWARD_IP) {
+    headers["x-forwarded-for"] = process.env.FORWARD_IP;
   }
 
   if (logging) {
