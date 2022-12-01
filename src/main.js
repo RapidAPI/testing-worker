@@ -160,7 +160,8 @@ async function executeOnce(overwriteDetails = {}) {
     if (global.settings.logging) {
       if (e.response) {
         consola.error(`fetchAndExecute error: ${e.response.status}, ${e.response.statusText}, ${e.response.data}`);
-        consola.info({ headers: e.response.headers });
+        consola.info({ response: e.response });
+        consola.info({ request: e.request });
       } else {
         consola.error(`fetchAndExecute error: ${e}`);
       }
