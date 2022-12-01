@@ -52,7 +52,7 @@ jobs:
           {
             name: ap-southeast-1,  
             key: AWS-AP-SOUTHEAST-1,
-            logging: 'on'
+            logging: 'off'
           },
           {
             name: ap-northeast-1, 
