@@ -5,7 +5,7 @@
   "private": false,
   "license": "MIT",
   "scripts": {
-    "worker:local:interval": "node src/main.js",
+    "worker:local:interval": "node --unhandled-rejections=strict src/main.js",
     "lint": "yarn eslint src/**",
     "format": "yarn prettier -w src/**",
     "check-format": "yarn prettier -c src/**",
