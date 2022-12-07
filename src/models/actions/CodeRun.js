@@ -2,37 +2,36 @@ const { BaseAction } = require("./BaseAction");
 const { performance } = require("perf_hooks");
 const { NodeVM } = require("vm2");
 
-let resolve = null;
-let t0 = 0;
-
-process.on("uncaughtException", (e) => {
-  if (resolve) {
-    resolve({
-      actionReports: [
-        {
-          action: "Code.run",
-          success: false,
-          shortSummary: e.message || e,
-          longSummary: null,
-          time: performance.now() - t0,
-        },
-      ],
-    });
-  }
-  // Do not delete!
-  //
-  // Used to catch asynchronous exceptions from inside of CodeRun that will otherwise
-  // not be caught by try/catch.
-  //
-  // The worker will crash if this event is not defined and an exception occurs in an
-  // asynchronous code run.
-});
-
 class CodeRun extends BaseAction {
+  constructor(args) {
+    super(args);
+    this.resolve = null;
+    this.t0 = 0;
+  }
+
   async eval(context) {
+    process.on("uncaughtException", (e) => {
+      // Used to catch asynchronous unhandled exceptions from inside of CodeRun.
+      // https://github.com/patriksimek/vm2#error-handling
+      if (this.resolve) {
+        this.resolve({
+          actionReports: [
+            {
+              action: "Code.run",
+              success: false,
+              shortSummary: e.message || e,
+              longSummary: null,
+              time: performance.now() - this.t0,
+            },
+          ],
+        });
+      }
+    });
+
     return new Promise((_resolve) => {
-      resolve = _resolve;
-      t0 = performance.now();
+      this.resolve = _resolve;
+      this.kyle = 1;
+      this.t0 = performance.now();
       const vm = new NodeVM({
         timeout: 60000,
         eval: false,
@@ -69,7 +68,7 @@ class CodeRun extends BaseAction {
             });
 
             // happy path
-            resolve({
+            this.resolve({
               contextWrites,
               actionReports: [
                 {
@@ -83,35 +82,35 @@ class CodeRun extends BaseAction {
                     null,
                     4
                   ),
-                  time: performance.now() - t0,
+                  time: performance.now() - this.t0,
                 },
               ],
             });
           })
           .catch((e) => {
             // error inside async code run that returns a promise
-            resolve({
+            this.resolve({
               actionReports: [
                 {
                   action: "Code.run",
                   success: false,
                   shortSummary: e.message || e,
                   longSummary: null,
-                  time: performance.now() - t0,
+                  time: performance.now() - this.t0,
                 },
               ],
             });
           });
       } catch (e) {
         // error inside sync code run that returns an object
-        resolve({
+        this.resolve({
           actionReports: [
             {
               action: "Code.run",
               success: false,
               shortSummary: e.message || e,
               longSummary: null,
-              time: performance.now() - t0,
+              time: performance.now() - this.t0,
             },
           ],
         });
