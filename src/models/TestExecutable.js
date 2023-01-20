@@ -129,11 +129,27 @@ class TestExecutable {
 
     //OVERALL SUCCESS
     let success = _actionReports.filter((a) => a.success == false).length == 0 && result === FINISHED_EXECUTION;
+    let _finalReport = _actionReports;
+
+    if(actions.length > _actionReports.length){
+      _finalReport = actions.map((e, i) => {
+        if(_actionReports[i]){
+          return  _actionReports[i];
+        }
+        return {
+          action: e.action,
+          success: false,
+          shortSummary: i === _actionReports.length ?  `Timed out - Steps timeout in ${stepTimeoutSeconds}s`: "Cancelled due to previous step timing out",
+          longSummary: null,
+          time: i === _actionReports.length  ?  stepTimeoutSeconds * 1000 : 0
+        };
+      });
+    }
 
     return {
       contextWrites: totalContextWrites, // optional
       apiCalls: _apiCalls,
-      actionReports: _actionReports,
+      actionReports: _finalReport,
       elapsedTime,
       success,
       timedOut: result === TIMEOUT,
