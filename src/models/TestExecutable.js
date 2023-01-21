@@ -63,6 +63,7 @@ class TestExecutable {
     let _apiCalls = [];
     let _actionReports = [];
     let timeoutId;
+    let currentActionIndex = 0;
 
     // TIMING
     const { performance } = require("perf_hooks");
@@ -116,6 +117,7 @@ class TestExecutable {
         // this does need to bubble to the top for child tests to be correctly scoped
         // into a parent.
         totalContextWrites.push(...result.contextWrites);
+        currentActionIndex += 1;
       }
       // Clear the timeout or else the lambda will hang around until it finishes which is not
       // ideal for default workers without a frequency value.
@@ -123,26 +125,25 @@ class TestExecutable {
       return FINISHED_EXECUTION;
     })();
     let result = await Promise.race([timeoutTimer, testExecution]);
-    //TIMING
+    // TIMING
     const t1 = performance.now();
     const elapsedTime = t1 - t0;
 
-    //OVERALL SUCCESS
+    // OVERALL SUCCESS
     let success = _actionReports.filter((a) => a.success == false).length == 0 && result === FINISHED_EXECUTION;
     let _finalReport = _actionReports;
 
-    if(actions.length > _actionReports.length){
-      _finalReport = actions.map((e, i) => {
-        if(_actionReports[i]){
-          return  _actionReports[i];
-        }
-        return {
-          action: e.action,
-          success: false,
-          shortSummary: i === _actionReports.length ?  `Timed out - Steps timeout in ${stepTimeoutSeconds}s`: "Cancelled due to previous step timing out",
-          longSummary: null,
-          time: i === _actionReports.length  ?  stepTimeoutSeconds * 1000 : 0
-        };
+    if (result === TIMEOUT) {
+      const finishedStepsTotalTime = _finalReport.reduce((a, c) => a + c.time, 0);
+
+      // Add a failed step for the test timeout limit and inform the user that subsequent steps
+      // have been skipped
+      _finalReport.push({
+        action: actions[currentActionIndex].action,
+        success: false,
+        shortSummary: `Test exceeded timeout limit of ${timeoutSeconds}s. Subsequent steps skipped.`,
+        longSummary: null,
+        time: elapsedTime - finishedStepsTotalTime, // time delta is where the step terminated due to timeout
       });
     }
 
