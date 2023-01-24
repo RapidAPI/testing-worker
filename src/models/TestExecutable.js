@@ -91,7 +91,7 @@ class TestExecutable {
         let result = { contextWrites: [], apiCalls: [], actionReports: [] };
         //2. evaluate action
         try {
-          result = Object.assign(result, await action.eval(context, timeoutSeconds));
+          result = Object.assign(result, await action.eval(context, timeoutSeconds, stepTimeoutSeconds));
         } catch (e) {
           result.actionReports = [
             {
