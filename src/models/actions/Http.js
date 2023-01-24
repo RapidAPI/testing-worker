@@ -38,7 +38,8 @@ class Http extends BaseAction {
     return requestObj;
   }
 
-  async eval(context, stepTimeoutSeconds = 15) {
+  // eslint-disable-next-line no-unused-vars
+  async eval(context, timeoutSeconds = 300, stepTimeoutSeconds = 15) {
     // fetch axios instance from context or create one if does not exist
     // this "shared" axios instance is used to ensure that cookies are properly passed between requests
     let transport;
