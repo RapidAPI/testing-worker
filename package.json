@@ -1,6 +1,6 @@
 {
   "name": "@rapidapi/testing-worker",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A RapidAPI Testing worker CLI",
   "private": false,
   "license": "MIT",
