@@ -55,6 +55,29 @@ describe("LoopForEach", () => {
     expect($action.children.eval.callCount).toBe(5);
   });
 
+  it("should pass timeouts to childrens' eval", async () => {
+    let $action = new LoopForEach({
+      expression: "arr",
+      variable: "var",
+    });
+    $action.children = {
+      eval: sinon.spy(
+        sinon.fake.returns({
+          apiCalls: [],
+          actionReports: [],
+          contextWrites: [],
+        })
+      ),
+    };
+    let $context = new Context({ arr: [1, 2, 3, 4, 5] });
+    await $action.eval($context, 100, 10);
+
+    for (let i = 0; i < 5; i++) {
+      expect($action.children.eval.getCall(i).args[1]).toEqual(100);
+      expect($action.children.eval.getCall(i).args[2]).toEqual(10);
+    }
+  });
+
   it("should pass contextWrites for each loop", async () => {
     let $action = new LoopForEach({
       expression: "arr",

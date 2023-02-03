@@ -2,11 +2,15 @@ const { BaseAction } = require("./BaseAction");
 const { performance } = require("perf_hooks");
 
 class MiscGroup extends BaseAction {
-  async eval(context) {
+  async eval(context, timeoutSeconds = 300, stepTimeoutSeconds = 15) {
     const t0 = performance.now();
 
     try {
-      let { apiCalls, actionReports, contextWrites } = await this.children.eval(context);
+      let { apiCalls, actionReports, contextWrites } = await this.children.eval(
+        context,
+        timeoutSeconds,
+        stepTimeoutSeconds
+      );
       return {
         contextWrites,
         apiCalls,

@@ -102,7 +102,7 @@ describe("JsonValidate", () => {
     expect(typeof $result.actionReports[0].time).toBe("number");
   });
 
-  it.only("should fail result when the formatter validation fails", async () => {
+  it("should fail result when the formatter validation fails", async () => {
     let $action = new JsonValidate({
       expression: "foo",
       schema: JSON.stringify({

@@ -27,7 +27,7 @@ function compare(val1, operator, val2) {
 }
 
 class LogicIf extends BaseAction {
-  async eval(context) {
+  async eval(context, timeoutSeconds = 300, stepTimeoutSeconds = 15) {
     const t0 = performance.now();
     let { key, value, operator } = this.parameters;
 
@@ -35,7 +35,11 @@ class LogicIf extends BaseAction {
       let comparisonResult = compare(key, operator, value);
 
       if (comparisonResult) {
-        let { apiCalls, actionReports, contextWrites } = await this.children.eval(context);
+        let { apiCalls, actionReports, contextWrites } = await this.children.eval(
+          context,
+          timeoutSeconds,
+          stepTimeoutSeconds
+        );
         return {
           contextWrites,
           apiCalls,

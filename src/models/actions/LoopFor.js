@@ -2,7 +2,7 @@ const { BaseAction } = require("./BaseAction");
 const { performance } = require("perf_hooks");
 
 class LoopForEach extends BaseAction {
-  async eval(context) {
+  async eval(context, timeoutSeconds = 300, stepTimeoutSeconds = 15) {
     const t0 = performance.now();
     let arr;
 
@@ -48,8 +48,11 @@ class LoopForEach extends BaseAction {
     for (let elem of arr) {
       // the loop variable is local only, this won't be passed up in contextWrites arrays
       context.set(elemName, elem);
-
-      let { apiCalls, actionReports, contextWrites } = await this.children.eval(context);
+      let { apiCalls, actionReports, contextWrites } = await this.children.eval(
+        context,
+        timeoutSeconds,
+        stepTimeoutSeconds
+      );
       result.actionReports.push(...actionReports);
       result.contextWrites.push(...contextWrites);
       result.apiCalls.push(...apiCalls);
