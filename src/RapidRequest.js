@@ -69,11 +69,14 @@ const sendRequestResult = async (
   }
 };
 
-const processRequest = async (req) => {
+const processRequest = async (req, allowRedirects = true) => {
   const mockContext = new Context({});
   req.payload = req.data;
   const action = new Http(req);
-  const result = await action.eval(mockContext);
+
+  const TEST_TIMEOUT = 0; // this is not used for the Http action, value is irrelevant
+  const STEP_TIMEOUT = 15; // requests always use default step timeout, tests can override this value however
+  const result = await action.eval(mockContext, TEST_TIMEOUT, STEP_TIMEOUT, allowRedirects);
   const executionTime = result.actionReports && result.actionReports.length > 0 && result.actionReports[0].time;
   if (!result.response) {
     // Cases where the DNS can not resolve or we don't get a response from the server.
@@ -95,7 +98,7 @@ const processRequest = async (req) => {
   }
 };
 
-const executeRequest = async (request) => {
+const executeRequest = async (request, allowRedirects = true) => {
   const context = new Context(
     {
       ...(request.envVariables || {}),
@@ -106,7 +109,7 @@ const executeRequest = async (request) => {
 
   const transformedRequest = recursiveReplace(request.request, context.data);
 
-  return await processRequest(transformedRequest);
+  return await processRequest(transformedRequest, allowRedirects);
 };
 
 const executeAndSendRequest = async (request, locationDetails) => {
