@@ -39,21 +39,28 @@ class Http extends BaseAction {
   }
 
   // eslint-disable-next-line no-unused-vars
-  async eval(context, timeoutSeconds = 300, stepTimeoutSeconds = 15) {
+  async eval(context, timeoutSeconds = 300, stepTimeoutSeconds = 15, allowRedirects = true) {
     // fetch axios instance from context or create one if does not exist
     // this "shared" axios instance is used to ensure that cookies are properly passed between requests
     let transport;
+
+    // Security measure to prevent redirects when used in an environment with access
+    // to sensitive information.
+    const maxRedirects = allowRedirects ? 5 : 0; // 5 is the axios default
+
     try {
       transport = context.get("__http_transport");
     } catch (e) {
       if (global.settings?.ignoreSSL === "false" || !global.settings) {
         transport = axios.create({
           withCredentials: true,
+          maxRedirects,
         });
       } else {
         // Allow self-signed or missing SSL certs
         transport = axios.create({
           withCredentials: true,
+          maxRedirects,
           httpsAgent: new https.Agent({
             rejectUnauthorized: false,
           }),
