@@ -311,7 +311,8 @@ describe("Http", () => {
       });
 
       await $action.eval(new Context());
-      expect(axios.create.mock.calls[0][0]).toStrictEqual({
+      expect(axios.create.mock.calls[0][0]).toMatchObject({
+        maxRedirects: 5,
         withCredentials: true,
       });
     });
@@ -330,9 +331,43 @@ describe("Http", () => {
       await $action.eval(new Context());
       expect(axios.create.mock.calls[0][0]).toMatchObject({
         withCredentials: true,
+        maxRedirects: 5,
         httpsAgent: {
-          options: { rejectUnauthorized: false },
+          options: {
+            rejectUnauthorized: false,
+          },
         },
+      });
+    });
+  });
+
+  describe("eval params", () => {
+    it("sets `maxRedirects` to 0 when allowRedirects is false", async () => {
+      const { HttpGet } = require("./Http");
+
+      let $action = new HttpGet({
+        url: "https://fake.org/ip",
+        variable: "ccc",
+      });
+
+      await $action.eval(new Context(), 1, 1, false);
+      expect(axios.create.mock.calls[0][0]).toMatchObject({
+        withCredentials: true,
+        maxRedirects: 0,
+      });
+    });
+    it("sets `maxRedirects` to 5 when allowRedirects is true", async () => {
+      const { HttpGet } = require("./Http");
+
+      let $action = new HttpGet({
+        url: "https://fake.org/ip",
+        variable: "ccc",
+      });
+
+      await $action.eval(new Context(), 1, 1, true);
+      expect(axios.create.mock.calls[0][0]).toMatchObject({
+        withCredentials: true,
+        maxRedirects: 5,
       });
     });
   });
