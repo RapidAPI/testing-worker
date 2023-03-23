@@ -19,13 +19,12 @@ jobs:
       - run: yarn lint
       # Make zip
       - uses: ./.github/actions/build-zip
-        with: 
+        with:
           ACTIONS_ACCESS_KEY: ${{ secrets.ACTIONS_ACCESS_KEY }}
       - uses: actions/checkout@v2
       # Default worker
       - uses: ./.github/actions/upload-lambda
-        with: 
-          ACTIONS_ACCESS_KEY: ${{ secrets.ACTIONS_ACCESS_KEY }}
+        with:
           worker_env: >
             BASE_URL=https://rapidapi.xyz/testing,
             LOCATION_CONTEXT=Default,
@@ -40,8 +39,7 @@ jobs:
           function_name: rapidapi-stage-testing-worker
       # Custom worker
       - uses: ./.github/actions/upload-lambda
-        with: 
-          ACTIONS_ACCESS_KEY: ${{ secrets.ACTIONS_ACCESS_KEY }}
+        with:
           worker_env: >
             BASE_URL=https://rapidapi.xyz/testing,
             LOCATION_CONTEXT=3799087,

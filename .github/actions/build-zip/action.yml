@@ -16,7 +16,7 @@ runs:
       shell: "bash"
       run: cd ../dist && yarn install --frozen-lockfile
       env:
-        NODE_AUTH_TOKEN: ${{inputs.ACTIONS_ACCESS_KEY}}
+        NODE_AUTH_TOKEN: ${{ inputs.ACTIONS_ACCESS_KEY }}
     # Kind of a hack to avoid recursively copying the dist folder
     - name: Move dist folder down
       shell: "bash"

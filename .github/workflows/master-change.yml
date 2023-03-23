@@ -20,9 +20,9 @@ jobs:
       - run: yarn lint
       # Build lambda zip
       - uses: ./.github/actions/build-zip
-        with: 
+        with:
           ACTIONS_ACCESS_KEY: ${{ secrets.ACTIONS_ACCESS_KEY }}
-  
+
   lambda-upload-zip-to-aws:
     needs: [node-run-tests]
     runs-on: ubuntu-latest
@@ -45,27 +45,27 @@ jobs:
             logging: 'off'
           },
           {
-            name: ap-south-1, 
+            name: ap-south-1,
             key: AWS-AP-SOUTH-1,
             logging: 'off'
           },
           {
-            name: ap-southeast-1,  
+            name: ap-southeast-1,
             key: AWS-AP-SOUTHEAST-1,
             logging: 'off'
           },
           {
-            name: ap-northeast-1, 
+            name: ap-northeast-1,
             key: AWS-AP-NORTHEAST-1,
             logging: 'off'
           },
           {
-            name: eu-central-1,  
+            name: eu-central-1,
             key: AWS-EU-CENTRAL-1,
             logging: 'off'
           },
           {
-            name: eu-west-3, 
+            name: eu-west-3,
             key: AWS-EU-WEST-3,
             logging: 'off'
           },
@@ -78,8 +78,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/upload-lambda
-        with: 
-          ACTIONS_ACCESS_KEY: ${{ secrets.ACTIONS_ACCESS_KEY }}
+        with:
           worker_env: >
             BASE_URL=https://rapidapi.com/testing,
             LOCATION_CONTEXT=Default,
@@ -155,4 +154,3 @@ jobs:
           file: ./docker/Dockerfile.worker
           push: true
           tags: rapidapicloud/testing-worker:latest
-  
