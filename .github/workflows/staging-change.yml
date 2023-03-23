@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - staging
+  pull_request:
+    branches:
+      - staging
+
 
 jobs:
   test-and-upload-to-staging:
@@ -20,35 +24,35 @@ jobs:
       # Make zip
       - uses: ./.github/actions/build-zip
         with:
-          ACTIONS_ACCESS_KEY: ${{ secrets.ACTIONS_ACCESS_KEY }}
-      - uses: actions/checkout@v2
-      # Default worker
-      - uses: ./.github/actions/upload-lambda
-        with:
-          worker_env: >
-            BASE_URL=https://rapidapi.xyz/testing,
-            LOCATION_CONTEXT=Default,
-            LOCATION_KEY=AWS-STAGING,
-            LOCATION_SECRET=${{ secrets.LOCATION_SECRET_STAGING_DEFAULT }},
-            WORKER_LOGGING=cli,
-            POLLING_TIME_MAX=5000,
-            FREQUENCY=1000
-          aws_access_key_id: ${{ secrets.AWS_STAGING_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_STAGING_SECRET_ACCESS_KEY }}
-          aws_region: us-east-1
-          function_name: rapidapi-stage-testing-worker
-      # Custom worker
-      - uses: ./.github/actions/upload-lambda
-        with:
-          worker_env: >
-            BASE_URL=https://rapidapi.xyz/testing,
-            LOCATION_CONTEXT=3799087,
-            LOCATION_KEY=custom-staging-worker,
-            LOCATION_SECRET=${{ secrets.LOCATION_SECRET_STAGING_CUSTOM }},
-            POLLING_TIME_MAX=70000,
-            FREQUENCY=2000,
-            WORKER_LOGGING=cli
-          aws_access_key_id: ${{ secrets.AWS_STAGING_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_STAGING_SECRET_ACCESS_KEY }}
-          aws_region: us-east-1
-          function_name: rapidapi-stage-testing-worker-custom
+          ACTIONS_ACCESS_KEY: ${{ secrets.GITHUB_TOKEN }}
+      # - uses: actions/checkout@v2
+      # # Default worker
+      # - uses: ./.github/actions/upload-lambda
+      #   with:
+      #     worker_env: >
+      #       BASE_URL=https://rapidapi.xyz/testing,
+      #       LOCATION_CONTEXT=Default,
+      #       LOCATION_KEY=AWS-STAGING,
+      #       LOCATION_SECRET=${{ secrets.LOCATION_SECRET_STAGING_DEFAULT }},
+      #       WORKER_LOGGING=cli,
+      #       POLLING_TIME_MAX=5000,
+      #       FREQUENCY=1000
+      #     aws_access_key_id: ${{ secrets.AWS_STAGING_ACCESS_KEY_ID }}
+      #     aws_secret_access_key: ${{ secrets.AWS_STAGING_SECRET_ACCESS_KEY }}
+      #     aws_region: us-east-1
+      #     function_name: rapidapi-stage-testing-worker
+      # # Custom worker
+      # - uses: ./.github/actions/upload-lambda
+      #   with:
+      #     worker_env: >
+      #       BASE_URL=https://rapidapi.xyz/testing,
+      #       LOCATION_CONTEXT=3799087,
+      #       LOCATION_KEY=custom-staging-worker,
+      #       LOCATION_SECRET=${{ secrets.LOCATION_SECRET_STAGING_CUSTOM }},
+      #       POLLING_TIME_MAX=70000,
+      #       FREQUENCY=2000,
+      #       WORKER_LOGGING=cli
+      #     aws_access_key_id: ${{ secrets.AWS_STAGING_ACCESS_KEY_ID }}
+      #     aws_secret_access_key: ${{ secrets.AWS_STAGING_SECRET_ACCESS_KEY }}
+      #     aws_region: us-east-1
+      #     function_name: rapidapi-stage-testing-worker-custom
