@@ -21,7 +21,7 @@ jobs:
       # Build lambda zip
       - uses: ./.github/actions/build-zip
         with:
-          ACTIONS_ACCESS_KEY: ${{ secrets.ACTIONS_ACCESS_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   lambda-upload-zip-to-aws:
     needs: [node-run-tests]
@@ -108,7 +108,7 @@ jobs:
           registry: https://registry.npmjs.org/
       - uses: JS-DevTools/npm-publish@v1
         with:
-          token: ${{ secrets.ACTIONS_ACCESS_KEY }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           registry: https://npm.pkg.github.com
 
   make-release:

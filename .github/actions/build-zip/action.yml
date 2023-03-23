@@ -1,8 +1,8 @@
 name: "Build zip"
 
 inputs:
-  ACTIONS_ACCESS_KEY:
-    description: "secrets.ACTIONS_ACCESS_KEY"
+  GITHUB_TOKEN:
+    description: "secrets.GITHUB_TOKEN"
     required: true
 
 runs:
@@ -16,7 +16,7 @@ runs:
       shell: "bash"
       run: cd ../dist && yarn install --frozen-lockfile
       env:
-        NODE_AUTH_TOKEN: ${{ inputs.ACTIONS_ACCESS_KEY }}
+        NODE_AUTH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
     # Kind of a hack to avoid recursively copying the dist folder
     - name: Move dist folder down
       shell: "bash"
@@ -24,8 +24,8 @@ runs:
     - name: Zip dist
       shell: "bash"
       run: zip -rq worker.zip dist/*
-    # - name: Upload the zipped worker
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: zipped_worker
-    #     path: worker.zip
+    - name: Upload the zipped worker
+      uses: actions/upload-artifact@v2
+      with:
+        name: zipped_worker
+        path: worker.zip
