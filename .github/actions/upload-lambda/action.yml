@@ -7,7 +7,7 @@ inputs:
   aws_region:
     description: "The region to deploy the lambda too"
     required: true
-  function_name: 
+  function_name:
     description: "Lambda function name"
     required: true
   aws_access_key_id:
@@ -15,9 +15,6 @@ inputs:
     required: true
   aws_secret_access_key:
     description: "The AWS access secret for the provided region"
-    required: true
-  ACTIONS_ACCESS_KEY:
-    description: "secrets.ACTIONS_ACCESS_KEY"
     required: true
 
 runs:
